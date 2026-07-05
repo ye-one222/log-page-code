@@ -20,12 +20,21 @@ const COLLECTION_BASE = {
 
 type CollectionName = keyof typeof COLLECTION_BASE;
 
-/** 세 컬렉션의 글을 모두 모아 최신순으로 반환 (draft 제외) */
+/**
+ * 발행 필터 — publish: true인 글만 사이트에 노출된다 (opt-in).
+ * Obsidian vault의 개인 메모가 실수로 공개되는 것을 막는 장치이므로
+ * 모든 getCollection 호출은 반드시 이 필터를 거쳐야 한다.
+ */
+export function published(entry: { data: { publish: boolean } }): boolean {
+  return entry.data.publish;
+}
+
+/** 세 컬렉션의 발행된 글을 모두 모아 최신순으로 반환 */
 export async function getAllPosts(): Promise<FeedItem[]> {
   const names: CollectionName[] = ['research', 'playground', 'shelf'];
   const nested = await Promise.all(
     names.map(async (name) => {
-      const entries = await getCollection(name, ({ data }) => !data.draft);
+      const entries = await getCollection(name, published);
       return entries.map((entry): FeedItem => {
         const type = entry.data.type as ContentType;
         return {

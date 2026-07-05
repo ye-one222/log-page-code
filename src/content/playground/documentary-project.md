@@ -1,4 +1,5 @@
 ---
+publish: true
 title: 학과 다큐멘터리 — 기획부터 상영까지
 date: 2026-06-02
 type: video

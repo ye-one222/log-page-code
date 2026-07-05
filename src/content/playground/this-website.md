@@ -1,4 +1,5 @@
 ---
+publish: true
 title: 이 웹사이트를 직접 만들며 배운 것들
 date: 2026-07-06
 type: web

@@ -1,4 +1,5 @@
 ---
+publish: true
 title: Blender 첫 단편 애니메이션 도전기
 date: 2026-06-20
 type: 3d

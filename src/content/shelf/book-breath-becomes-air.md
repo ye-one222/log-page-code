@@ -1,4 +1,5 @@
 ---
+publish: true
 title: 숨결이 바람 될 때
 date: 2026-06-25
 type: book

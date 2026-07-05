@@ -2,3 +2,8 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+
+# Obsidian: 작성 환경 설정은 공유하되, 개인 작업 상태(열린 탭 등)는 제외
+src/content/.obsidian/*
+!src/content/.obsidian/app.json
+!src/content/.obsidian/templates.json

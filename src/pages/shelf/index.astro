@@ -5,12 +5,12 @@ import AlbumSleeve from '../../components/shelf/AlbumSleeve.astro';
 import TicketStub from '../../components/shelf/TicketStub.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { getPersona, TYPE_META } from '../../config/personas';
-import { formatDate } from '../../lib/posts';
+import { formatDate, published } from '../../lib/posts';
 
 type ShelfEntry = CollectionEntry<'shelf'>;
 type ShelfType = ShelfEntry['data']['type'];
 
-const entries = (await getCollection('shelf', ({ data }) => !data.draft)).sort(
+const entries = (await getCollection('shelf', published)).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 

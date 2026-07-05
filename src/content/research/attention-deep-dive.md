@@ -1,4 +1,5 @@
 ---
+publish: true
 title: Attention은 왜 잘 될까 — 수식으로 뜯어보기
 date: 2026-06-15
 type: note

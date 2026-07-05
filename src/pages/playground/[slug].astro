@@ -2,9 +2,10 @@
 import { getCollection, render } from 'astro:content';
 import Article from '../../layouts/Article.astro';
 import { getPersona, TYPE_META } from '../../config/personas';
+import { published } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('playground', ({ data }) => !data.draft);
+  const entries = await getCollection('playground', published);
   return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 

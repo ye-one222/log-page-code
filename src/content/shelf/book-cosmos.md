@@ -1,4 +1,5 @@
 ---
+publish: true
 title: 코스모스
 date: 2026-05-02
 type: book

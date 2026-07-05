@@ -11,7 +11,8 @@ const base = {
   title: z.string(),
   date: z.coerce.date(),
   summary: z.string(),
-  draft: z.boolean().default(false),
+  /** 발행은 opt-in: publish: true를 명시한 글만 사이트에 노출된다 */
+  publish: z.boolean().default(false),
 };
 
 const research = defineCollection({

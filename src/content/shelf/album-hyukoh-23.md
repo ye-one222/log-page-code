@@ -1,4 +1,5 @@
 ---
+publish: true
 title: '23'
 date: 2026-06-10
 type: album

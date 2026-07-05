@@ -1,4 +1,5 @@
 ---
+publish: true
 title: 3D Gaussian Splatting 다시 읽기
 date: 2026-06-28
 type: paper

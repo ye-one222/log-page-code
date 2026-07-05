@@ -1,4 +1,5 @@
 ---
+publish: true
 title: 우리 밴드 정기공연 Vol.1
 date: 2026-06-22
 type: ticket

@@ -2,9 +2,9 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { getPersona, TYPE_META } from '../../config/personas';
-import { formatDate } from '../../lib/posts';
+import { formatDate, published } from '../../lib/posts';
 
-const entries = (await getCollection('playground', ({ data }) => !data.draft)).sort(
+const entries = (await getCollection('playground', published)).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 

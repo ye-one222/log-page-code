@@ -1,4 +1,5 @@
 ---
+publish: true
 title: 이기적 유전자
 date: 2026-06-08
 type: book

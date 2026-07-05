@@ -1,4 +1,5 @@
 ---
+publish: true
 title: OK Computer
 date: 2026-05-20
 type: album

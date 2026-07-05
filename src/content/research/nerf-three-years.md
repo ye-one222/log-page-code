@@ -1,4 +1,5 @@
 ---
+publish: true
 title: NeRF 이후 3년, 연구 흐름 한눈에 정리
 date: 2026-05-30
 type: note
