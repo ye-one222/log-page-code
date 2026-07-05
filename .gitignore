@@ -3,7 +3,6 @@ dist/
 .astro/
 .DS_Store
 
-# Obsidian: 작성 환경 설정은 공유하되, 개인 작업 상태(열린 탭 등)는 제외
-src/content/.obsidian/*
-!src/content/.obsidian/app.json
-!src/content/.obsidian/templates.json
+# 콘텐츠는 별도 private 리포 (mypage-content) — 이 리포는 콘텐츠를 추적하지 않는다.
+# 새로 클론했다면: git clone https://github.com/yewon-akkang/mypage-content src/content
+src/content/
