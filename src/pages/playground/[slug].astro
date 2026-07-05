@@ -1,0 +1,34 @@
+---
+import { getCollection, render } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+import { getPersona, TYPE_META } from '../../config/personas';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('playground', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const { color } = getPersona('creator');
+const pills = [
+  {
+    label: TYPE_META[entry.data.type].label,
+    style: `background: ${color.soft}; color: ${color.deep}`,
+  },
+  ...(entry.data.tools.length > 0 ? [{ label: entry.data.tools.join(' · ') }] : []),
+];
+---
+
+<Article
+  title={entry.data.title}
+  date={entry.data.date}
+  active="playground"
+  pills={pills}
+  backHref="/playground/"
+  backLabel="Playground 목록으로"
+  description={entry.data.summary}
+>
+  <Content />
+</Article>

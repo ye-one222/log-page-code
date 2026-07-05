@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import PersonaHero from '../components/PersonaHero.astro';
+import { getAllPosts, feedByPersona } from '../lib/posts';
+
+const posts = await getAllPosts();
+const feeds = feedByPersona(posts);
+---
+
+<Base>
+  <PersonaHero feeds={feeds} />
+</Base>

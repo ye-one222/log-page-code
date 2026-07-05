@@ -1,0 +1,73 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { paletteFor } from '../../lib/shelf';
+
+interface Props {
+  entry: CollectionEntry<'shelf'>;
+}
+
+const { entry } = Astro.props;
+const color = paletteFor(entry.id, entry.data.color);
+---
+
+<span class="album">
+  <span class="art">
+    <span class="disc"><span class="label" style={`background: ${color.bg}`}></span></span>
+    <span class="sleeve" style={`background: ${color.bg}`}></span>
+  </span>
+  <span class="name">{entry.data.creator} — {entry.data.title}</span>
+</span>
+
+<style>
+  .album {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 96px;
+  }
+
+  .art {
+    position: relative;
+    width: 84px;
+    height: 96px;
+    display: block;
+  }
+
+  .disc {
+    position: absolute;
+    top: 0;
+    left: 7px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #2c2c2a;
+    display: block;
+  }
+
+  .label {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .sleeve {
+    position: absolute;
+    bottom: 0;
+    width: 84px;
+    height: 84px;
+    border-radius: 3px;
+    display: block;
+  }
+
+  .name {
+    font-size: 11px;
+    color: var(--text-2);
+    margin-top: 8px;
+    text-align: center;
+    line-height: 1.4;
+  }
+</style>

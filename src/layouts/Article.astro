@@ -1,0 +1,90 @@
+---
+import Base from './Base.astro';
+import type { SectionKey } from '../config/site';
+import { formatDate } from '../lib/posts';
+
+/** research / playground / shelf 상세 페이지가 공유하는 글 레이아웃 */
+export interface Pill {
+  label: string;
+  /** inline style: "background: ...; color: ..." */
+  style?: string;
+}
+
+interface Props {
+  title: string;
+  date: Date;
+  active: SectionKey;
+  pills?: Pill[];
+  backHref: string;
+  backLabel: string;
+  description?: string;
+}
+
+const { title, date, active, pills = [], backHref, backLabel, description } = Astro.props;
+---
+
+<Base title={title} active={active} description={description}>
+  <article class="post">
+    <header>
+      {
+        pills.length > 0 && (
+          <div class="pills">
+            {pills.map((pill) => (
+              <span class="pill" style={pill.style}>
+                {pill.label}
+              </span>
+            ))}
+          </div>
+        )
+      }
+      <h1>{title}</h1>
+      <p class="date">{formatDate(date)}</p>
+    </header>
+    <slot name="meta" />
+    <div class="prose">
+      <slot />
+    </div>
+    <p class="back"><a href={backHref}>← {backLabel}</a></p>
+  </article>
+</Base>
+
+<style>
+  .post {
+    padding-top: 48px;
+  }
+
+  .pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .pill:not([style]) {
+    background: var(--surface);
+    color: var(--text-2);
+  }
+
+  h1 {
+    font-size: 26px;
+    max-width: 680px;
+  }
+
+  .date {
+    font-size: 13px;
+    color: var(--text-3);
+    margin: 10px 0 36px;
+  }
+
+  .back {
+    margin-top: 56px;
+  }
+
+  .back a {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .back a:hover {
+    color: var(--text);
+  }
+</style>

@@ -1,0 +1,255 @@
+---
+import Character from './Character.astro';
+import PostCard from './PostCard.astro';
+import { PERSONAS, type PersonaId } from '../config/personas';
+import { NAV, SITE } from '../config/site';
+import type { FeedItem } from '../lib/posts';
+
+/**
+ * 홈 화면: 회전 버튼으로 페르소나를 전환하는 히어로 + 페르소나별 최신 글 피드.
+ * 모든 페르소나의 마크업을 서버에서 렌더링해두고, 스크립트는 hidden 토글만 한다.
+ */
+interface Props {
+  feeds: Record<PersonaId, FeedItem[]>;
+}
+
+const { feeds } = Astro.props;
+
+function sectionHref(persona: (typeof PERSONAS)[number]): string {
+  return NAV.find((n) => n.key === persona.nav)?.href ?? '/';
+}
+---
+
+<section class="hero">
+  <div class="copy-col">
+    {
+      PERSONAS.map((p, i) => (
+        <div class="copy" data-persona={p.id} hidden={i !== 0}>
+          <span class="pill" style={`background: ${p.color.soft}; color: ${p.color.deep}`}>
+            {p.badge}
+          </span>
+          <h1>안녕하세요, {SITE.author}입니다</h1>
+          <p class="role">{p.role}</p>
+          <p class="tagline">{p.tagline}</p>
+        </div>
+      ))
+    }
+    <div class="actions">
+      <a class="btn" href="/about/">About me</a>
+    </div>
+  </div>
+
+  <div class="stage-col">
+    <div class="ring-wrap">
+      <div class="ring" id="persona-ring" style={`border-color: ${PERSONAS[0].color.main}`}>
+        {
+          PERSONAS.map((p, i) => (
+            <div class="char" data-persona={p.id} hidden={i !== 0}>
+              <Character persona={p} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="dots" aria-hidden="true">
+      {
+        PERSONAS.map((p, i) => (
+          <span
+            class:list={['dot', { on: i === 0 }]}
+            data-persona={p.id}
+            data-color={p.color.main}
+            data-nav={p.nav}
+          />
+        ))
+      }
+    </div>
+    <button class="btn" id="persona-rotate" type="button"> 회전 — 다른 나 만나기 </button>
+  </div>
+</section>
+
+<section class="feeds">
+  {
+    PERSONAS.map((p, i) => (
+      <div class="feed" data-persona={p.id} hidden={i !== 0}>
+        <div class="feed-head">
+          <h2>{p.name}의 글</h2>
+          <a class="more" href={sectionHref(p)}>
+            전체 보기 →
+          </a>
+        </div>
+        {feeds[p.id].length > 0 ? (
+          <div class="grid">
+            {feeds[p.id].map((item) => (
+              <PostCard item={item} />
+            ))}
+          </div>
+        ) : (
+          <p class="empty">아직 글이 없어요. 곧 채워집니다.</p>
+        )}
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 56px 0 40px;
+    flex-wrap: wrap;
+  }
+
+  .copy-col {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin: 16px 0 8px;
+  }
+
+  .role {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .tagline {
+    font-size: 15px;
+    color: var(--text-2);
+    min-height: 52px;
+  }
+
+  .actions {
+    margin-top: 20px;
+  }
+
+  .stage-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin: 0 auto;
+  }
+
+  .ring-wrap {
+    perspective: 700px;
+  }
+
+  .ring {
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 3px solid transparent;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .dots {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    transition: background 0.3s ease;
+  }
+
+  .feeds {
+    padding-bottom: 20px;
+  }
+
+  .feed-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .feed-head h2 {
+    font-size: 19px;
+  }
+
+  .more {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  .more:hover {
+    color: var(--text);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .empty {
+    font-size: 14px;
+    color: var(--text-3);
+  }
+</style>
+
+<script>
+  const ring = document.getElementById('persona-ring')!;
+  const rotateBtn = document.getElementById('persona-rotate')!;
+  const dots = Array.from(document.querySelectorAll<HTMLElement>('.dot'));
+  const navLinks = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-key]'));
+  const blocks = Array.from(document.querySelectorAll<HTMLElement>('[data-persona]'));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let index = 0;
+  let busy = false;
+
+  function show(i: number) {
+    const dot = dots[i];
+    const id = dot.dataset.persona;
+    for (const block of blocks) {
+      if (block.classList.contains('dot')) continue;
+      block.hidden = block.dataset.persona !== id;
+    }
+    for (const d of dots) {
+      d.classList.toggle('on', d === dot);
+      d.style.background = d === dot ? (d.dataset.color ?? '') : '';
+    }
+    ring.style.borderColor = dot.dataset.color ?? '';
+    for (const link of navLinks) {
+      link.classList.toggle('active', link.dataset.navKey === dot.dataset.nav);
+    }
+  }
+
+  rotateBtn.addEventListener('click', () => {
+    if (busy) return;
+    if (reduceMotion) {
+      index = (index + 1) % dots.length;
+      show(index);
+      return;
+    }
+    busy = true;
+    ring.style.transform = 'rotateY(90deg)';
+    setTimeout(() => {
+      index = (index + 1) % dots.length;
+      show(index);
+      // 반대편(-90°)으로 순간 이동시킨 뒤 0°로 돌아오게 해 "관통 회전"처럼 보이게 한다.
+      // requestAnimationFrame은 백그라운드 탭에서 멈추므로 동기 리플로우로 처리.
+      ring.style.transition = 'none';
+      ring.style.transform = 'rotateY(-90deg)';
+      void ring.offsetWidth;
+      ring.style.transition = 'transform 0.3s ease, border-color 0.3s ease';
+      ring.style.transform = 'rotateY(0deg)';
+      busy = false;
+    }, 300);
+  });
+
+  show(0);
+</script>

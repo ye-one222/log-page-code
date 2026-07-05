@@ -1,0 +1,43 @@
+---
+import { getPersona } from '../config/personas';
+import { formatDate, type FeedItem } from '../lib/posts';
+
+interface Props {
+  item: FeedItem;
+}
+
+const { item } = Astro.props;
+const { color } = getPersona(item.persona);
+---
+
+<a class="card post-card" href={item.href}>
+  <span class="pill" style={`background: ${color.soft}; color: ${color.deep}`}>
+    {item.typeLabel}
+  </span>
+  <p class="title">{item.title}</p>
+  <p class="date">{formatDate(item.date)}</p>
+</a>
+
+<style>
+  .post-card {
+    display: block;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .post-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+
+  .title {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 10px 0 8px;
+  }
+
+  .date {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+</style>

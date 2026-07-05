@@ -1,0 +1,81 @@
+---
+import { NAV, SITE, type SectionKey } from '../config/site';
+import { PERSONAS } from '../config/personas';
+
+interface Props {
+  /** 현재 페이지가 속한 섹션. 홈은 비워두면 스크립트가 페르소나에 따라 표시한다. */
+  active?: SectionKey;
+}
+
+const { active } = Astro.props;
+
+/** 섹션별 포인트 컬러: 해당 섹션을 대표하는 페르소나의 색을 따라간다 */
+function accentFor(key: SectionKey): string {
+  const persona = PERSONAS.find((p) => p.nav === key);
+  return persona ? persona.color.main : 'var(--text-3)';
+}
+---
+
+<header class="site-header">
+  <div class="container inner">
+    <a class="logo" href="/">{SITE.title}</a>
+    <nav aria-label="주 메뉴">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            data-nav-key={item.key}
+            class:list={['nav-link', { active: item.key === active }]}
+            style={`--accent: ${accentFor(item.key)}`}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .logo {
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  nav {
+    display: flex;
+    gap: 22px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    color: var(--text-2);
+    padding: 4px 2px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+  }
+
+  .nav-link.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+</style>

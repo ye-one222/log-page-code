@@ -1,0 +1,263 @@
+---
+import Base from '../../layouts/Base.astro';
+import BookSpine from '../../components/shelf/BookSpine.astro';
+import AlbumSleeve from '../../components/shelf/AlbumSleeve.astro';
+import TicketStub from '../../components/shelf/TicketStub.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { getPersona, TYPE_META } from '../../config/personas';
+import { formatDate } from '../../lib/posts';
+
+type ShelfEntry = CollectionEntry<'shelf'>;
+type ShelfType = ShelfEntry['data']['type'];
+
+const entries = (await getCollection('shelf', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+/** 선반 한 칸 = 콘텐츠 유형 하나. 새 유형(영화 등)이 생기면 여기에 한 줄 추가 */
+const rows: { type: ShelfType; label: string; unit: string }[] = [
+  { type: 'book', label: '읽은 책', unit: '권' },
+  { type: 'album', label: '듣는 음반', unit: '장' },
+  { type: 'ticket', label: '다녀온 공연', unit: '회' },
+];
+
+const byType = (type: ShelfType) => entries.filter((e) => e.data.type === type);
+
+function pillStyle(type: ShelfType): string {
+  const { color } = getPersona(TYPE_META[type].persona);
+  return `background: ${color.soft}; color: ${color.deep}`;
+}
+---
+
+<Base title="Shelf" active="shelf">
+  <header class="head">
+    <h1>Shelf</h1>
+    <p>읽고, 듣고, 다녀온 것들의 진열장</p>
+    <p class="hint">꽂힌 것을 눌러보세요</p>
+  </header>
+
+  {
+    rows.map((row) => {
+      const items = byType(row.type);
+      return (
+        <section class="shelf-row">
+          <p class="label">
+            {row.label}
+            <span>
+              {items.length}
+              {row.unit}
+            </span>
+          </p>
+          <div class="items">
+            {items.map((entry) => (
+              <button class="item" type="button" data-slug={entry.id} aria-label={entry.data.title}>
+                {row.type === 'book' ? (
+                  <BookSpine entry={entry} />
+                ) : row.type === 'album' ? (
+                  <AlbumSleeve entry={entry} />
+                ) : (
+                  <TicketStub entry={entry} />
+                )}
+              </button>
+            ))}
+            {items.length === 0 && <p class="empty">아직 비어 있는 선반이에요.</p>}
+          </div>
+          <div class="plank" />
+        </section>
+      );
+    })
+  }
+
+  <div class="detail" id="shelf-detail">
+    {
+      entries.map((entry) => (
+        <article data-slug={entry.id} hidden>
+          <span class="pill" style={pillStyle(entry.data.type)}>
+            {TYPE_META[entry.data.type].label}
+          </span>
+          <h2>{entry.data.title}</h2>
+          <p class="meta">
+            {entry.data.creator} · {formatDate(entry.data.date)}
+            {entry.data.venue ? ` · ${entry.data.venue}` : ''}
+          </p>
+          {entry.data.rating && (
+            <p class="stars" aria-label={`별점 5점 중 ${entry.data.rating}점`}>
+              {'★'.repeat(entry.data.rating)}
+              <span class="off">{'★'.repeat(5 - entry.data.rating)}</span>
+            </p>
+          )}
+          <p class="note">{entry.data.summary}</p>
+          {entry.data.quote && <blockquote>“{entry.data.quote}”</blockquote>}
+          <a class="full" href={`/shelf/${entry.id}/`}>
+            전체 기록 →
+          </a>
+        </article>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .head {
+    padding: 48px 0 36px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .head p {
+    font-size: 15px;
+    color: var(--text-2);
+    margin-top: 8px;
+  }
+
+  .head .hint {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  .shelf-row {
+    margin-bottom: 36px;
+  }
+
+  .label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .label span {
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--text-3);
+    margin-left: 8px;
+  }
+
+  .items {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0 8px;
+  }
+
+  .item {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: flex-end;
+    transition: transform 0.15s ease;
+    border-radius: 3px;
+  }
+
+  .item:hover {
+    transform: translateY(-5px);
+  }
+
+  .item.on {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  .empty {
+    font-size: 14px;
+    color: var(--text-3);
+    padding-bottom: 6px;
+  }
+
+  .plank {
+    height: 8px;
+    background: var(--border-strong);
+    border-radius: 2px;
+  }
+
+  .detail {
+    margin-top: 32px;
+  }
+
+  .detail article {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+
+  .detail h2 {
+    font-size: 19px;
+    margin: 12px 0 4px;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-bottom: 10px;
+  }
+
+  .stars {
+    color: #ba7517;
+    font-size: 15px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .stars .off {
+    color: var(--border-strong);
+  }
+
+  .note {
+    font-size: 15px;
+    max-width: 640px;
+  }
+
+  blockquote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-2);
+    border-left: 3px solid var(--border-strong);
+    margin: 14px 0 0;
+    padding: 2px 0 2px 14px;
+    max-width: 640px;
+  }
+
+  .full {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--text-2);
+    margin-top: 16px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .full:hover {
+    color: var(--text);
+  }
+</style>
+
+<script>
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.item[data-slug]'));
+  const details = Array.from(
+    document.querySelectorAll<HTMLElement>('#shelf-detail article[data-slug]'),
+  );
+
+  function select(slug: string) {
+    for (const item of items) item.classList.toggle('on', item.dataset.slug === slug);
+    for (const detail of details) detail.hidden = detail.dataset.slug !== slug;
+  }
+
+  for (const item of items) {
+    item.addEventListener('click', () => {
+      const slug = item.dataset.slug!;
+      select(slug);
+      history.replaceState(null, '', `#${slug}`);
+    });
+  }
+
+  // URL 해시(#slug)로 들어오면 해당 항목을, 아니면 첫 항목을 펼친다
+  const fromHash = decodeURIComponent(location.hash.slice(1));
+  const initial = items.find((i) => i.dataset.slug === fromHash) ?? items[0];
+  if (initial) select(initial.dataset.slug!);
+</script>

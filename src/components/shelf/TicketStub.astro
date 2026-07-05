@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { hashOf } from '../../lib/shelf';
+import { formatDate } from '../../lib/posts';
+
+interface Props {
+  entry: CollectionEntry<'shelf'>;
+}
+
+const { entry } = Astro.props;
+const tilt = (hashOf(entry.id) % 5) - 2;
+---
+
+<span class="ticket" style={`transform: rotate(${tilt}deg)`}>
+  <span class="name">{entry.data.title}</span>
+  <span class="meta">
+    {formatDate(entry.data.date)}{entry.data.venue ? ` · ${entry.data.venue}` : ''}
+  </span>
+</span>
+
+<style>
+  .ticket {
+    display: inline-block;
+    background: #faeeda;
+    border: 1px solid #efc27a;
+    border-radius: 4px;
+    padding: 10px 14px;
+    width: 170px;
+  }
+
+  .name {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #412402;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .meta {
+    display: block;
+    font-size: 11px;
+    color: #854f0b;
+    border-top: 1px dashed #efc27a;
+    padding-top: 4px;
+  }
+</style>

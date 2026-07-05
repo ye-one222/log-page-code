@@ -1,0 +1,98 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { getPersona, TYPE_META } from '../../config/personas';
+import { formatDate } from '../../lib/posts';
+
+const entries = (await getCollection('research', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const { color } = getPersona('researcher');
+---
+
+<Base title="Research" active="research">
+  <header class="head">
+    <h1>Research</h1>
+    <p>논문을 읽고, 개념을 소화해서 기록합니다</p>
+  </header>
+
+  <div class="list">
+    {
+      entries.map((entry) => (
+        <a class="row" href={`/research/${entry.id}/`}>
+          <div class="pills">
+            <span class="pill" style={`background: ${color.soft}; color: ${color.deep}`}>
+              {TYPE_META[entry.data.type].label}
+            </span>
+            {entry.data.venue && <span class="pill venue">{entry.data.venue}</span>}
+          </div>
+          <h2>{entry.data.title}</h2>
+          <p class="summary">{entry.data.summary}</p>
+          <p class="date">{formatDate(entry.data.date)}</p>
+        </a>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .head {
+    padding: 48px 0 32px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .head p {
+    font-size: 15px;
+    color: var(--text-2);
+    margin-top: 8px;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row {
+    display: block;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .row:hover h2 {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .venue {
+    background: var(--surface);
+    color: var(--text-2);
+  }
+
+  h2 {
+    font-size: 18px;
+    max-width: 640px;
+  }
+
+  .summary {
+    font-size: 14px;
+    color: var(--text-2);
+    max-width: 640px;
+    margin-top: 6px;
+  }
+
+  .date {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 10px;
+  }
+</style>

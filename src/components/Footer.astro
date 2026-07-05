@@ -1,0 +1,50 @@
+---
+import { SITE } from '../config/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="container inner">
+    <p class="copy">© {year} {SITE.author}</p>
+    <div class="links">
+      <a href={`mailto:${SITE.email}`}>Email</a>
+      <a href={SITE.social.github} target="_blank" rel="noopener">GitHub</a>
+      <a href={SITE.social.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+    margin-top: 80px;
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    padding-bottom: 32px;
+  }
+
+  .copy {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  .links {
+    display: flex;
+    gap: 16px;
+  }
+
+  .links a {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+
+  .links a:hover {
+    color: var(--text);
+  }
+</style>

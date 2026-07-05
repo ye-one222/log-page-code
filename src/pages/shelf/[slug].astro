@@ -1,0 +1,73 @@
+---
+import { getCollection, render } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+import { getPersona, TYPE_META } from '../../config/personas';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('shelf', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const { color } = getPersona(TYPE_META[entry.data.type].persona);
+const pills = [
+  {
+    label: TYPE_META[entry.data.type].label,
+    style: `background: ${color.soft}; color: ${color.deep}`,
+  },
+  { label: entry.data.creator },
+];
+---
+
+<Article
+  title={entry.data.title}
+  date={entry.data.date}
+  active="shelf"
+  pills={pills}
+  backHref={`/shelf/#${entry.id}`}
+  backLabel="Shelf로 돌아가기"
+  description={entry.data.summary}
+>
+  <div slot="meta" class="record-meta">
+    {
+      entry.data.rating && (
+        <p class="stars" aria-label={`별점 5점 중 ${entry.data.rating}점`}>
+          {'★'.repeat(entry.data.rating)}
+          <span class="off">{'★'.repeat(5 - entry.data.rating)}</span>
+        </p>
+      )
+    }
+    {entry.data.quote && <blockquote>“{entry.data.quote}”</blockquote>}
+  </div>
+  <Content />
+</Article>
+
+<style>
+  .record-meta {
+    margin-bottom: 28px;
+  }
+
+  .stars {
+    color: #ba7517;
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .stars .off {
+    color: var(--border-strong);
+  }
+
+  blockquote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-2);
+    border-left: 3px solid var(--border-strong);
+    margin: 0;
+    padding: 2px 0 2px 14px;
+    max-width: 640px;
+  }
+</style>
