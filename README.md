@@ -58,7 +58,7 @@ git clone git@github-ofkor:ye-one222/log-page.git src/content
 | 페르소나 (문구, 색, 콘텐츠 유형 매핑) | `src/config/personas.ts` |
 | frontmatter 필드 추가/변경 | `src/content.config.ts` |
 | 전체 색/폰트 토큰 | `src/styles/global.css` |
-| 캐릭터 그림 | `src/components/Character.astro` |
+| 3D 캐릭터 (스킨 픽셀아트/모델/애니메이션) | `src/lib/character3d/` (skin.ts / model.ts / index.ts) |
 | 홈 회전 인터랙션 | `src/components/PersonaHero.astro` |
 | Shelf 진열 모양 (책등 크기/색 규칙) | `src/lib/shelf.ts` + `src/components/shelf/` |
 | About 이력/기술 | `src/pages/about.astro` 상단 배열 |
@@ -71,9 +71,10 @@ git clone git@github-ofkor:ye-one222/log-page.git src/content
   3. `src/pages/shelf/index.astro`: `rows` 배열에 한 줄 추가
 - **새 페르소나 추가**
   1. `personas.ts`: `PersonaId`와 `PERSONAS`에 추가
-  2. `Character.astro`: 액세서리 분기 추가
-- **3D 캐릭터로 업그레이드** — `Character.astro`만 Three.js 컴포넌트로 교체하면 된다.
-  회전 로직(PersonaHero)은 캐릭터 구현을 모르게 분리되어 있다.
+  2. `src/lib/character3d/skin.ts`: 스킨(옷/머리 하이라이트) 페인터 추가
+  3. `src/lib/character3d/model.ts`: 소품 그룹 추가
+- **3D 캐릭터 디자인 사양** — `design/3d-character/design.md` (파츠 치수, 64×64 텍스처 맵, 팔레트, 애니메이션 규칙).
+  PersonaHero는 `CharacterController` 인터페이스(setPersona/spin)만 알고, 렌더링 세부는 `src/lib/character3d/`에 캡슐화되어 있다.
 
 ## 배포
 

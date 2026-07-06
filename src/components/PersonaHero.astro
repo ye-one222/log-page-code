@@ -1,5 +1,4 @@
 ---
-import Character from './Character.astro';
 import PostCard from './PostCard.astro';
 import { PERSONAS, type PersonaId } from '../config/personas';
 import { NAV, SITE } from '../config/site';
@@ -7,7 +6,8 @@ import type { FeedItem } from '../lib/posts';
 
 /**
  * 홈 화면: 회전 버튼으로 페르소나를 전환하는 히어로 + 페르소나별 최신 글 피드.
- * 모든 페르소나의 마크업을 서버에서 렌더링해두고, 스크립트는 hidden 토글만 한다.
+ * 캐릭터는 Three.js 복셀 캐릭터(src/lib/character3d) — 캔버스 하나에서
+ * 스킨을 갈아입는 방식이라 페르소나별 마크업은 텍스트/피드만 존재한다.
  */
 interface Props {
   feeds: Record<PersonaId, FeedItem[]>;
@@ -40,16 +40,8 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
   </div>
 
   <div class="stage-col">
-    <div class="ring-wrap">
-      <div class="ring" id="persona-ring" style={`border-color: ${PERSONAS[0].color.main}`}>
-        {
-          PERSONAS.map((p, i) => (
-            <div class="char" data-persona={p.id} hidden={i !== 0}>
-              <Character persona={p} />
-            </div>
-          ))
-        }
-      </div>
+    <div class="ring" id="persona-ring" style={`border-color: ${PERSONAS[0].color.main}`}>
+      <canvas id="persona-canvas" width="230" height="230" aria-hidden="true"></canvas>
     </div>
     <div class="dots" aria-hidden="true">
       {
@@ -134,21 +126,20 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
     margin: 0 auto;
   }
 
-  .ring-wrap {
-    perspective: 700px;
-  }
-
   .ring {
     width: 230px;
     height: 230px;
     border-radius: 50%;
     background: var(--surface);
     border: 3px solid transparent;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
     overflow: hidden;
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    transition: border-color 0.3s ease;
+  }
+
+  .ring canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   .dots {
@@ -201,12 +192,27 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
 </style>
 
 <script>
+  import { createPersonaCharacter } from '../lib/character3d';
+  import type { PersonaId } from '../config/personas';
+
   const ring = document.getElementById('persona-ring')!;
+  const canvas = document.getElementById('persona-canvas') as HTMLCanvasElement;
   const rotateBtn = document.getElementById('persona-rotate')!;
   const dots = Array.from(document.querySelectorAll<HTMLElement>('.dot'));
   const navLinks = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-key]'));
-  const blocks = Array.from(document.querySelectorAll<HTMLElement>('[data-persona]'));
+  const blocks = Array.from(
+    document.querySelectorAll<HTMLElement>('.copy[data-persona], .feed[data-persona]'),
+  );
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // WebGL 미지원 환경에서는 캐릭터 없이 텍스트 전환만 동작한다
+  let character: ReturnType<typeof createPersonaCharacter> | null = null;
+  try {
+    character = createPersonaCharacter(canvas, dots[0].dataset.persona as PersonaId);
+  } catch (error) {
+    console.error('3D 캐릭터 초기화 실패:', error);
+    canvas.hidden = true;
+  }
 
   let index = 0;
   let busy = false;
@@ -214,10 +220,7 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
   function show(i: number) {
     const dot = dots[i];
     const id = dot.dataset.persona;
-    for (const block of blocks) {
-      if (block.classList.contains('dot')) continue;
-      block.hidden = block.dataset.persona !== id;
-    }
+    for (const block of blocks) block.hidden = block.dataset.persona !== id;
     for (const d of dots) {
       d.classList.toggle('on', d === dot);
       d.style.background = d === dot ? (d.dataset.color ?? '') : '';
@@ -230,25 +233,25 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
 
   rotateBtn.addEventListener('click', () => {
     if (busy) return;
-    if (reduceMotion) {
-      index = (index + 1) % dots.length;
+    const next = (index + 1) % dots.length;
+    const id = dots[next].dataset.persona as PersonaId;
+
+    if (!character || reduceMotion) {
+      index = next;
       show(index);
+      character?.setPersona(id);
       return;
     }
+
     busy = true;
-    ring.style.transform = 'rotateY(90deg)';
-    setTimeout(() => {
-      index = (index + 1) % dots.length;
-      show(index);
-      // 반대편(-90°)으로 순간 이동시킨 뒤 0°로 돌아오게 해 "관통 회전"처럼 보이게 한다.
-      // requestAnimationFrame은 백그라운드 탭에서 멈추므로 동기 리플로우로 처리.
-      ring.style.transition = 'none';
-      ring.style.transform = 'rotateY(-90deg)';
-      void ring.offsetWidth;
-      ring.style.transition = 'transform 0.3s ease, border-color 0.3s ease';
-      ring.style.transform = 'rotateY(0deg)';
-      busy = false;
-    }, 300);
+    character
+      .spin(id, () => {
+        index = next;
+        show(index);
+      })
+      .finally(() => {
+        busy = false;
+      });
   });
 
   show(0);
