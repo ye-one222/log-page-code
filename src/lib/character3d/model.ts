@@ -95,15 +95,15 @@ function buildGlassesAndNote(): THREE.Group {
   const g = new THREE.Group();
   const ink = '#2C2C2A';
   // 안경: 속이 빈 프레임(막대 4개) + 반투명 유리 — 텍스처의 눈이 그대로 비쳐 보인다
-  // 렌즈 창은 눈(3×2u)에 딱 맞게 작게 (눈 중심 y≈27, x=±2.5, 얼굴 z=+4)
-  for (const x of [-2.5, 2.5]) {
+  // 렌즈 창은 눈(3×2u)에 딱 맞게 작게, 렌즈 사이 간격은 0.9u (얼굴 z=+4)
+  for (const x of [-2.25, 2.25]) {
     g.add(voxel(3.6, 0.6, 0.6, ink, [x, 28.4, 4.1]));
     g.add(voxel(3.6, 0.6, 0.6, ink, [x, 25.6, 4.1]));
     g.add(voxel(0.6, 3.4, 0.6, ink, [x - 1.5, 27, 4.1]));
     g.add(voxel(0.6, 3.4, 0.6, ink, [x + 1.5, 27, 4.1]));
     g.add(voxel(2.4, 2.2, 0.4, '#EAF0FF', [x, 27, 4.1], { opacity: 0.25 }));
   }
-  g.add(voxel(1.4, 0.6, 0.6, ink, [0, 27.4, 4.1]));
+  g.add(voxel(1.0, 0.6, 0.6, ink, [0, 27.4, 4.1]));
   // 픽셀 노트: 오른손 옆
   const note = new THREE.Group();
   note.add(voxel(3, 4, 1, '#FFFFFF', [0, 0, 0]));
