@@ -182,19 +182,44 @@ function eachFace(faces: FaceRects, painter: (rect: Rect, name: keyof FaceRects)
 /* 공유 파츠: 머리(피부+얼굴), 머리카락, 청바지                          */
 /* ------------------------------------------------------------------ */
 
-/** 눈만 다시 그리기 — 깜빡임 애니메이션에서 재사용 */
+/** 애니메 스타일 눈 팔레트: 속눈썹 라인 + 로즈 눈동자 + 하이라이트 */
+const EYE = {
+  lash: '#3B2A30',
+  iris: '#C25E77',
+  irisLight: '#E39AAC',
+  shine: '#FFFFFF',
+} as const;
+
+/**
+ * 눈만 다시 그리기 — 깜빡임 애니메이션에서 재사용.
+ * 2×3(가로×세로) 구성: 위 속눈썹 → 눈동자+흰 반짝임(코 쪽) → 밝은 눈동자.
+ * 통짜 검정 대신 세로로 긴 그라데이션이라 미소녀 스킨 느낌이 난다.
+ */
 export function paintEyes(ctx: Ctx, closed: boolean): void {
   const [fx, fy] = UV.head.front;
+  // 바탕 복구
   ctx.fillStyle = SHARED.skin;
-  ctx.fillRect(fx + 1, fy + 4, 2, 2);
-  ctx.fillRect(fx + 5, fy + 4, 2, 2);
-  ctx.fillStyle = SHARED.ink;
+  ctx.fillRect(fx + 1, fy + 4, 2, 3);
+  ctx.fillRect(fx + 5, fy + 4, 2, 3);
+
   if (closed) {
+    ctx.fillStyle = EYE.lash;
     ctx.fillRect(fx + 1, fy + 5, 2, 1);
     ctx.fillRect(fx + 5, fy + 5, 2, 1);
-  } else {
-    ctx.fillRect(fx + 1, fy + 4, 2, 2);
-    ctx.fillRect(fx + 5, fy + 4, 2, 2);
+    return;
+  }
+
+  // [바깥쪽 x, 안쪽(코 쪽) x] — 반짝임은 항상 코 쪽에
+  for (const [outer, inner] of [
+    [fx + 1, fx + 2],
+    [fx + 6, fx + 5],
+  ]) {
+    ctx.fillStyle = EYE.lash;
+    ctx.fillRect(Math.min(outer, inner), fy + 4, 2, 1);
+    px(ctx, outer, fy + 5, EYE.iris);
+    px(ctx, inner, fy + 5, EYE.shine);
+    ctx.fillStyle = EYE.irisLight;
+    ctx.fillRect(Math.min(outer, inner), fy + 6, 2, 1);
   }
 }
 
