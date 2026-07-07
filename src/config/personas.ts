@@ -61,7 +61,7 @@ export const PERSONAS: Persona[] = [
     id: 'musician',
     badge: '밴드인의 나',
     name: '밴드인',
-    role: '밴드 기타 · 공연 기획',
+    role: '밴드 키보드 · 공연 기획',
     tagline: '무대 위의 3분을 위해 합주실에서 삽니다.',
     nav: 'shelf',
     color: { main: '#D4537E', soft: '#FBEAF0', deep: '#72243E' },
