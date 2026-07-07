@@ -68,17 +68,21 @@ function voxel(
 function buildGlassesAndNote(): THREE.Group {
   const g = new THREE.Group();
   const ink = '#2C2C2A';
-  // 둥근 안경: 렌즈 프레임 + 유리 + 브리지 (눈 중심 y≈23, x=±2, 얼굴 z=+4)
+  // 둥근 안경: 속이 빈 프레임(막대 4개) + 반투명 유리 — 텍스처의 눈이 그대로 비쳐 보인다
+  // (눈 중심 y≈27, x=±2, 얼굴 z=+4)
   for (const x of [-2, 2]) {
-    g.add(voxel(4.2, 4.2, 0.5, ink, [x, 23, 4.1]));
-    g.add(voxel(3, 3, 0.7, '#EAF0FF', [x, 23, 4.2]));
+    g.add(voxel(4.4, 0.7, 0.6, ink, [x, 29, 4.1]));
+    g.add(voxel(4.4, 0.7, 0.6, ink, [x, 25, 4.1]));
+    g.add(voxel(0.7, 4.5, 0.6, ink, [x - 1.9, 27, 4.1]));
+    g.add(voxel(0.7, 4.5, 0.6, ink, [x + 1.9, 27, 4.1]));
+    g.add(voxel(3, 3.6, 0.4, '#EAF0FF', [x, 27, 4.1], { opacity: 0.25 }));
   }
-  g.add(voxel(1.6, 0.8, 0.5, ink, [0, 23, 4.1]));
+  g.add(voxel(1.6, 0.7, 0.6, ink, [0, 27, 4.1]));
   // 픽셀 노트: 오른손 옆
   const note = new THREE.Group();
   note.add(voxel(3, 4, 1, '#FFFFFF', [0, 0, 0]));
   note.add(voxel(3.05, 1, 1.05, '#7F77DD', [0, 1.6, 0]));
-  note.position.set(-6.5 * U, 9 * U, 3 * U);
+  note.position.set(-6.5 * U, 13 * U, 3 * U);
   note.rotation.y = 0.25;
   g.add(note);
   return g;
@@ -92,11 +96,11 @@ function buildCamera(): THREE.Group {
   body.add(voxel(1.2, 1.2, 1.6, '#2C2C2A', [0, 0, 1.7]));
   body.add(voxel(1, 0.6, 1, '#3A3A38', [2, 2.2, 0]));
   body.add(voxel(0.7, 0.7, 0.4, '#F09595', [2.2, 0.8, 1.6]));
-  body.position.set(0, 13.5 * U, 3 * U);
+  body.position.set(0, 17.5 * U, 3 * U);
   g.add(body);
   // 넥 스트랩 (차콜 V자)
   for (const side of [-1, 1]) {
-    const strap = voxel(0.9, 6.4, 0.6, '#3A3A38', [side * 1.9, 17.4, 2.2]);
+    const strap = voxel(0.9, 6.4, 0.6, '#3A3A38', [side * 1.9, 21.4, 2.2]);
     strap.rotation.z = side * -0.42;
     g.add(strap);
   }
@@ -113,7 +117,7 @@ function buildBook(): THREE.Group {
   right.rotation.y = -0.21;
   const spine = voxel(0.5, 5, 0.9, '#B4B2A9', [0, 0, 0]);
   g.add(left, right, spine);
-  g.position.set(0, 11 * U, 3.6 * U);
+  g.position.set(0, 15 * U, 3.6 * U);
   return g;
 }
 
@@ -124,7 +128,7 @@ function buildGuitar(): THREE.Group {
   body.add(voxel(6, 8, 2, '#8B2E4E', [0, 0, 0]));
   body.add(voxel(3, 3, 0.6, '#F0E0E8', [0.6, -0.6, 1.2]));
   body.add(voxel(2, 1, 0.7, '#2C2C2A', [-0.6, 1.8, 1.2]));
-  body.position.set(3.4 * U, 8.5 * U, 3.2 * U);
+  body.position.set(3.4 * U, 12.5 * U, 3.2 * U);
   body.rotation.z = 0.3;
   g.add(body);
   // 넥 + 헤드 + 프렛
@@ -134,11 +138,11 @@ function buildGuitar(): THREE.Group {
     neck.add(voxel(1.9, 0.4, 1.5, '#E8D9B0', [0, i * 2.4, 0]));
   }
   neck.add(voxel(2.4, 2, 1.5, '#3B2314', [0, 5.4, 0]));
-  neck.position.set(-0.6 * U, 13.5 * U, 3.2 * U);
+  neck.position.set(-0.6 * U, 17.5 * U, 3.2 * U);
   neck.rotation.z = 0.62;
   g.add(neck);
   // 어깨 스트랩 (핑크, 가슴 사선)
-  const strap = voxel(1, 13, 0.6, '#D4537E', [0.6, 15, 2.2]);
+  const strap = voxel(1, 13, 0.6, '#D4537E', [0.6, 19, 2.2]);
   strap.rotation.z = 0.55;
   g.add(strap);
   return g;
@@ -184,9 +188,12 @@ export function buildCharacter(initial: PersonaId): CharacterModel {
 
   const group = new THREE.Group();
 
-  // 머리는 갸웃 애니메이션을 위해 서브그룹 (피벗 = 목, y=20u)
+  // 파츠 배치는 겹침 없이: 다리 0~12u, 몸통 12~24u, 머리 24~32u
+  // (박스가 겹치면 같은 평면의 면끼리 z-fighting으로 깜빡인다)
+
+  // 머리는 갸웃 애니메이션을 위해 서브그룹 (피벗 = 목, y=24u)
   const head = new THREE.Group();
-  head.position.y = 20 * U;
+  head.position.y = 24 * U;
   head.add(skinnedPart(UV.head, 8, 8, 8, [0, 4, 0], bodyMaterial));
   const hair = skinnedPart(UV.hat, 8.6, 8.6, 8.6, [0, 4, 0], hairMaterial);
   head.add(hair);
@@ -194,9 +201,9 @@ export function buildCharacter(initial: PersonaId): CharacterModel {
 
   // 호흡 애니메이션 대상 (몸통+팔)
   const torso = new THREE.Group();
-  torso.add(skinnedPart(UV.body, 8, 12, 4, [0, 14, 0], bodyMaterial));
-  torso.add(skinnedPart(UV.armR, 4, 12, 4, [-6, 14, 0], bodyMaterial));
-  torso.add(skinnedPart(UV.armL, 4, 12, 4, [6, 14, 0], bodyMaterial));
+  torso.add(skinnedPart(UV.body, 8, 12, 4, [0, 18, 0], bodyMaterial));
+  torso.add(skinnedPart(UV.armR, 4, 12, 4, [-6, 18, 0], bodyMaterial));
+  torso.add(skinnedPart(UV.armL, 4, 12, 4, [6, 18, 0], bodyMaterial));
   group.add(torso);
 
   group.add(skinnedPart(UV.legR, 4, 12, 4, [-2, 6, 0], bodyMaterial));
@@ -215,7 +222,7 @@ export function buildCharacter(initial: PersonaId): CharacterModel {
     else group.add(accessories[id]);
   }
   // 안경은 머리를 따라가야 하므로 head 그룹 좌표계로 보정
-  accessories.researcher.position.y = -20 * U;
+  accessories.researcher.position.y = -24 * U;
 
   let current = initial;
 

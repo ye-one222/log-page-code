@@ -36,8 +36,8 @@ export function createPersonaCharacter(
 
   // 카메라: 정면 고정, 살짝 위에서 내려다봄 (design.md §1)
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-  camera.position.set(0, 2.1, 7.2);
-  camera.lookAt(0, 1.35, 0);
+  camera.position.set(0, 2.4, 7.9);
+  camera.lookAt(0, 1.55, 0);
 
   // three r155+ 물리 조명 단위: 구형 값(0.9/0.35)에 π를 곱해 보정
   scene.add(new THREE.HemisphereLight('#FFF9F2', '#E7DCCB', 2.8));
@@ -117,7 +117,20 @@ export function createPersonaCharacter(
     spin(next: PersonaId, onSwap: () => void): Promise<void> {
       if (spinning) return Promise.resolve();
       return new Promise((resolve) => {
-        spinning = { start: performance.now(), next, onSwap, swapped: false, resolve };
+        const state = { start: performance.now(), next, onSwap, swapped: false, resolve };
+        spinning = state;
+        // rAF는 백그라운드 탭에서 멈추므로, 시간이 지나면 강제로 완료시켜
+        // busy 락이 영원히 잠기지 않게 한다
+        setTimeout(() => {
+          if (spinning !== state) return;
+          if (!state.swapped) {
+            character.setPersona(next);
+            onSwap();
+          }
+          character.group.rotation.y = 0;
+          spinning = null;
+          resolve();
+        }, SPIN_MS + 100);
       });
     },
     dispose(): void {
