@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { PersonaId } from '../../config/personas';
-import { UV, paintSkin, paintEyes, type FaceRects, type Skin } from './skin';
+import { SHARED, UV, paintSkin, paintEyes, type FaceRects, type Skin } from './skin';
 
 /**
  * Minecraft 비율 캐릭터 모델 (design.md §1, §2, §5 소품).
@@ -59,6 +59,32 @@ function voxel(
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(w * U, h * U, d * U), material);
   mesh.position.set(pos[0] * U, pos[1] * U, pos[2] * U);
   return mesh;
+}
+
+/** 위가 원점인 머리카락 가닥: 본체 + 아래 2u는 진한 핑크 팁 */
+function hairStrand(w: number, h: number, d: number): THREE.Group {
+  const g = new THREE.Group();
+  g.add(voxel(w, h - 2, d, SHARED.hair, [0, -(h - 2) / 2, 0]));
+  g.add(voxel(w, 2, d, SHARED.hairTip, [0, -(h - 1), 0]));
+  return g;
+}
+
+/**
+ * 긴 머리 (전 페르소나 공유): 얼굴 양옆으로 가슴까지 내려오는 앞가닥 +
+ * 뒷머리 패널. head 그룹에 붙어 머리 갸웃을 따라 흔들린다.
+ * 좌표는 head 그룹 기준 (목=0, 머리 박스 0~8u).
+ */
+function buildLongHair(): THREE.Group {
+  const g = new THREE.Group();
+  for (const side of [-1, 1]) {
+    const strand = hairStrand(2.2, 12, 2.6);
+    strand.position.set(side * 4.0 * U, 1 * U, 2.2 * U);
+    g.add(strand);
+  }
+  const back = hairStrand(7.5, 11, 1.8);
+  back.position.set(0, 1 * U, -3.4 * U);
+  g.add(back);
+  return g;
 }
 
 /* ------------------------------------------------------------------ */
@@ -197,6 +223,7 @@ export function buildCharacter(initial: PersonaId): CharacterModel {
   head.add(skinnedPart(UV.head, 8, 8, 8, [0, 4, 0], bodyMaterial));
   const hair = skinnedPart(UV.hat, 8.6, 8.6, 8.6, [0, 4, 0], hairMaterial);
   head.add(hair);
+  head.add(buildLongHair());
   group.add(head);
 
   // 호흡 애니메이션 대상 (몸통+팔)

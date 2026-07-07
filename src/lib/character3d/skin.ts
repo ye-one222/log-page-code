@@ -82,15 +82,17 @@ export const UV: Record<string, FaceRects> = {
   },
 };
 
-/** 공유 팔레트 (design.md §3) */
+/** 공유 팔레트 — 피부/머리는 사용자 레퍼런스 스킨(창백한 핑크 피부 + 라이트 핑크 롱헤어) 기준 */
 export const SHARED = {
-  skin: '#F2C9A3',
-  skinShade: '#E6B48C',
-  skinLight: '#F8D8B8',
+  skin: '#F5DFDA',
+  skinShade: '#E9C6C0',
+  skinLight: '#FBEDE9',
   ink: '#2C2C2A',
-  blush: '#F0A0A0',
-  hair: '#E8A6B8',
-  hairShade: '#D98CA2',
+  blush: '#F0B4BC',
+  hair: '#F2B3BF',
+  hairShade: '#E295A6',
+  hairLight: '#FBE9EC',
+  hairTip: '#D97F94',
   jeans: '#6B7783',
   jeansLight: '#7C8896',
   jeansDark: '#5C6672',
@@ -182,44 +184,43 @@ function eachFace(faces: FaceRects, painter: (rect: Rect, name: keyof FaceRects)
 /* 공유 파츠: 머리(피부+얼굴), 머리카락, 청바지                          */
 /* ------------------------------------------------------------------ */
 
-/** 애니메 스타일 눈 팔레트: 속눈썹 라인 + 로즈 눈동자 + 하이라이트 */
+/** 레퍼런스 스킨의 눈 팔레트: 다크 모브 속눈썹 + 연분홍 눈동자 */
 const EYE = {
-  lash: '#3B2A30',
-  iris: '#C25E77',
-  irisLight: '#E39AAC',
+  lash: '#6B3A44',
+  iris: '#D98CA2',
+  irisLight: '#F2CED6',
   shine: '#FFFFFF',
 } as const;
 
 /**
  * 눈만 다시 그리기 — 깜빡임 애니메이션에서 재사용.
- * 2×3(가로×세로) 구성: 위 속눈썹 → 눈동자+흰 반짝임(코 쪽) → 밝은 눈동자.
- * 통짜 검정 대신 세로로 긴 그라데이션이라 미소녀 스킨 느낌이 난다.
+ * 레퍼런스처럼 가로로 넓은 3×2 구성: 위 속눈썹 라인(3px) →
+ * 바깥쪽 눈꼬리 윙 + 눈동자 + 코 쪽 흰 반짝임. 나른하고 순한 인상.
  */
 export function paintEyes(ctx: Ctx, closed: boolean): void {
   const [fx, fy] = UV.head.front;
-  // 바탕 복구
+  // 바탕 복구 (양쪽 눈 3×2 영역)
   ctx.fillStyle = SHARED.skin;
-  ctx.fillRect(fx + 1, fy + 4, 2, 3);
-  ctx.fillRect(fx + 5, fy + 4, 2, 3);
+  ctx.fillRect(fx, fy + 4, 3, 2);
+  ctx.fillRect(fx + 5, fy + 4, 3, 2);
 
   if (closed) {
     ctx.fillStyle = EYE.lash;
-    ctx.fillRect(fx + 1, fy + 5, 2, 1);
-    ctx.fillRect(fx + 5, fy + 5, 2, 1);
+    ctx.fillRect(fx, fy + 5, 3, 1);
+    ctx.fillRect(fx + 5, fy + 5, 3, 1);
     return;
   }
 
-  // [바깥쪽 x, 안쪽(코 쪽) x] — 반짝임은 항상 코 쪽에
-  for (const [outer, inner] of [
-    [fx + 1, fx + 2],
-    [fx + 6, fx + 5],
+  // [윙(바깥) x, 눈동자 x, 반짝임(코 쪽) x]
+  for (const [wing, iris, shine] of [
+    [fx, fx + 1, fx + 2],
+    [fx + 7, fx + 6, fx + 5],
   ]) {
     ctx.fillStyle = EYE.lash;
-    ctx.fillRect(Math.min(outer, inner), fy + 4, 2, 1);
-    px(ctx, outer, fy + 5, EYE.iris);
-    px(ctx, inner, fy + 5, EYE.shine);
-    ctx.fillStyle = EYE.irisLight;
-    ctx.fillRect(Math.min(outer, inner), fy + 6, 2, 1);
+    ctx.fillRect(Math.min(wing, shine), fy + 4, 3, 1);
+    px(ctx, wing, fy + 5, EYE.lash);
+    px(ctx, iris, fy + 5, EYE.iris);
+    px(ctx, shine, fy + 5, EYE.shine);
   }
 }
 
@@ -227,30 +228,27 @@ function paintHead(ctx: Ctx): void {
   eachFace(UV.head, (rect) => dither(ctx, rect, SHARED.skin, [SHARED.skinShade], 0.14, 11));
   const [fx, fy] = UV.head.front;
   paintEyes(ctx, false);
-  // 입 (살짝 웃음)
-  px(ctx, fx + 3, fy + 6, SHARED.ink);
-  px(ctx, fx + 4, fy + 6, SHARED.ink);
-  // 볼터치
-  px(ctx, fx, fy + 5, SHARED.blush);
-  px(ctx, fx + 7, fy + 5, SHARED.blush);
+  // 볼터치 (눈 아래) — 레퍼런스처럼 입은 없다
+  px(ctx, fx + 1, fy + 6, SHARED.blush);
+  px(ctx, fx + 6, fy + 6, SHARED.blush);
 }
 
-/** 파스텔 로즈 단발 overlay(hat 레이어). deep 톤은 페르소나별 하이라이트 */
-function paintHair(ctx: Ctx, highlight: string): void {
+/** 라이트 핑크 롱헤어 overlay(hat 레이어) — 레퍼런스와 동일하게 전 페르소나 공유 */
+function paintHair(ctx: Ctx): void {
   const grain = (rect: Rect, seed: number) =>
-    hairGrain(ctx, rect, SHARED.hair, SHARED.hairShade, highlight, seed);
+    hairGrain(ctx, rect, SHARED.hair, SHARED.hairShade, SHARED.hairLight, seed);
   grain(UV.hat.top, 21);
+  // 뒷머리·옆머리: 턱선까지 전부 덮음 (그 아래 긴 머리는 3D 가닥이 담당)
   grain(UV.hat.back, 22);
-  // 옆머리: 귀를 덮고 턱선(6u)까지
-  const [rx, ry] = UV.hat.right;
-  const [lx, ly] = UV.hat.left;
-  grain([rx, ry, 8, 6], 23);
-  grain([lx, ly, 8, 6], 24);
-  // 앞머리: 이마 위 2u + 삐죽 나온 3번째 줄
+  grain(UV.hat.right, 23);
+  grain(UV.hat.left, 24);
+  // 앞머리: 이마 위 2u + 삐죽 나온 3번째 줄, 얼굴 양옆 1열은 턱선까지
   const [fx, fy] = UV.hat.front;
   grain([fx, fy, 8, 2], 25);
+  grain([fx, fy + 2, 1, 6], 27);
+  grain([fx + 7, fy + 2, 1, 6], 28);
   const rand = rng(26);
-  for (let ix = 0; ix < 8; ix++) {
+  for (let ix = 1; ix < 7; ix++) {
     if (ix % 3 !== 1 && rand() < 0.8) px(ctx, fx + ix, fy + 2, rand() < 0.35 ? SHARED.hairShade : SHARED.hair);
   }
 }
@@ -409,11 +407,11 @@ function paintMusicianOutfit(ctx: Ctx): void {
 /* 조립                                                                */
 /* ------------------------------------------------------------------ */
 
-const OUTFIT: Record<PersonaId, { paint: (ctx: Ctx) => void; hairHighlight: string }> = {
-  researcher: { paint: paintResearcherOutfit, hairHighlight: '#3C3489' },
-  creator: { paint: paintCreatorOutfit, hairHighlight: '#0C5A45' },
-  reader: { paint: paintReaderOutfit, hairHighlight: '#712B13' },
-  musician: { paint: paintMusicianOutfit, hairHighlight: '#72243E' },
+const OUTFIT: Record<PersonaId, { paint: (ctx: Ctx) => void }> = {
+  researcher: { paint: paintResearcherOutfit },
+  creator: { paint: paintCreatorOutfit },
+  reader: { paint: paintReaderOutfit },
+  musician: { paint: paintMusicianOutfit },
 };
 
 export interface Skin {
@@ -429,7 +427,7 @@ export function paintSkin(persona: PersonaId): Skin {
   const ctx = canvas.getContext('2d')!;
   ctx.imageSmoothingEnabled = false;
   paintHead(ctx);
-  paintHair(ctx, OUTFIT[persona].hairHighlight);
+  paintHair(ctx);
   OUTFIT[persona].paint(ctx);
   return { canvas, ctx };
 }
