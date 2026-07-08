@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { PERSONAS, type PersonaId } from '../../config/personas';
 import { buildCharacter } from '../character3d/model';
 import { buildShell, buildZone, STANDS, type Zone } from './furniture';
-import { floorTexture, wallTexture } from './textures';
+import { floorTexture, skyTexture, wallTexture } from './textures';
 import { NEUTRAL } from './furniture';
 
 /**
@@ -84,7 +84,14 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
   const accent = new THREE.PointLight('#FFFFFF', 0, 4, 1.8);
   scene.add(accent);
 
-  scene.add(buildShell(floorTexture(10), wallTexture(NEUTRAL.plaster, NEUTRAL.plasterShade, 8), wallTexture(NEUTRAL.plasterDark, NEUTRAL.plasterShade, 8)));
+  scene.add(
+    buildShell(
+      floorTexture(10),
+      wallTexture(NEUTRAL.plaster, NEUTRAL.plasterShade, 8),
+      wallTexture(NEUTRAL.plasterDark, NEUTRAL.plasterShade, 8),
+      skyTexture(),
+    ),
+  );
 
   const zones = new Map<PersonaId, Zone>();
   for (const p of PERSONAS) {
@@ -306,6 +313,27 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
       (bookPageBase - flip * 2.2 - character.motion.bookPage.rotation.y) * 0.25;
   }
 
+  /**
+   * 비활성 구역 러그 펄스(0.5~1.0, 3s 주기 / reduced-motion은 정적)와
+   * 라벨 거리 페이드 — 카메라와 가까운 라벨은 숨겨 클로즈업 전경을 가리지 않게.
+   * tick과 renderOnce 양쪽에서 호출된다(rAF 정지 상태에서도 정확한 프레임).
+   */
+  function updateAffordances(t: number): void {
+    for (const zone of zones.values()) {
+      if (zone.id === active) continue;
+      const material = zone.pulse[0].material as THREE.MeshLambertMaterial;
+      material.opacity = reduceMotion
+        ? 0.8
+        : 0.75 + 0.25 * Math.sin((t * Math.PI * 2) / 3 + zone.stand.x + zone.stand.z);
+      const labelDist = zone.label.getWorldPosition(labelPos).distanceTo(camPose.pos);
+      (zone.label.material as THREE.SpriteMaterial).opacity = THREE.MathUtils.clamp(
+        (labelDist - 7) / 1.2,
+        0,
+        1,
+      );
+    }
+  }
+
   function tick(now: number): void {
     rafActive = false;
     if (disposed || !running()) return;
@@ -321,21 +349,7 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
     }
     character.group.rotation.y = charYaw;
 
-    // 비활성 구역 러그 펄스 (0.5~1.0, 3s 주기 / reduced-motion은 정적)
-    // 라벨은 카메라와 가까우면 페이드아웃 — 구역 클로즈업에서 전경을 가리지 않게
-    for (const zone of zones.values()) {
-      if (zone.id === active) continue;
-      const material = zone.pulse[0].material as THREE.MeshLambertMaterial;
-      material.opacity = reduceMotion
-        ? 0.8
-        : 0.75 + 0.25 * Math.sin((t * Math.PI * 2) / 3 + zone.stand.x + zone.stand.z);
-      const labelDist = zone.label.getWorldPosition(labelPos).distanceTo(camPose.pos);
-      (zone.label.material as THREE.SpriteMaterial).opacity = THREE.MathUtils.clamp(
-        (labelDist - 7) / 1.2,
-        0,
-        1,
-      );
-    }
+    updateAffordances(t);
 
     // 액센트 라이트: 활성 구역 램프로 이동 + 색 크로스페이드 (design.md §3)
     const zone = zones.get(active)!;
@@ -496,6 +510,7 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
   function renderOnce(): void {
     character.group.position.set(charPos.x, charY, charPos.z);
     character.group.rotation.y = charYaw;
+    updateAffordances((performance.now() - startedAt) / 1000);
     camera.position.copy(camPose.pos);
     camera.fov = camPose.fov;
     camera.updateProjectionMatrix();

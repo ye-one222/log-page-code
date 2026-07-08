@@ -365,6 +365,7 @@ export function buildShell(
   floorMap: THREE.Texture,
   wallMap: THREE.Texture,
   wallDarkMap: THREE.Texture,
+  skyMap: THREE.Texture,
 ): THREE.Group {
   const g = new THREE.Group();
   const add = (w: number, h: number, d: number, map: THREE.Texture | null, color: string | undefined, pos: [number, number, number]) => {
@@ -384,5 +385,21 @@ export function buildShell(
   add(80, 2, 1, null, NEUTRAL.woodShade, [0, 1, -39.8]);
   add(1, 2, 160, null, NEUTRAL.woodShade, [-39.8, 1, 40]);
   add(1, 2, 160, null, NEUTRAL.woodShade, [39.8, 1, 40]);
+
+  // 오른쪽 벽 큰 창문: 마인크래프트 스타일 맑은 하늘 (창 28×24u, 십자 창살 4분할)
+  // 하늘은 unlit(Basic) — 실내 조명과 무관하게 항상 밝다. 벽면(x=40)보다
+  // 0.1u 안쪽으로 내밀어 z-fighting을 피하고, 프레임이 가장자리를 덮는다.
+  const sky = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5 * U, 24 * U, 28 * U),
+    new THREE.MeshBasicMaterial({ map: skyMap }),
+  );
+  sky.position.set(40.15 * U, 26 * U, -2 * U);
+  g.add(sky);
+  add(1.4, 2, 32, null, NEUTRAL.wood, [39.9, 39, -2]); // 상단 프레임
+  add(3, 2, 32, null, NEUTRAL.wood, [39.6, 13, -2]); // 하단 선반(실내로 돌출)
+  add(1.4, 28, 2, null, NEUTRAL.wood, [39.9, 26, -18]); // 좌우 프레임
+  add(1.4, 28, 2, null, NEUTRAL.wood, [39.9, 26, 14]);
+  add(0.8, 24, 1.5, null, NEUTRAL.woodShade, [39.9, 26, -2]); // 십자 창살
+  add(0.8, 1.5, 28, null, NEUTRAL.woodShade, [39.9, 26, -2]);
   return g;
 }

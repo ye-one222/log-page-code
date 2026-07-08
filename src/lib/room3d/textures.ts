@@ -123,6 +123,32 @@ export function rugTexture(soft: string, main: string): THREE.CanvasTexture {
   return toTexture(canvas);
 }
 
+/** 창밖 맑은 하늘: 플랫 블루 + 블록 구름 + 픽셀 해 (unlit Basic 재질용) */
+export function skyTexture(): THREE.CanvasTexture {
+  const [canvas, ctx] = makeCanvas(56, 40);
+  ditherRect(ctx, 0, 0, 56, 40, '#7EC8F2', '#92D4F8', 0.05, false);
+  // 위쪽으로 갈수록 살짝 밝게 (2단 밴드)
+  ctx.fillStyle = '#8FD5FA';
+  for (let x = 0; x < 56; x += 2) ctx.fillRect(x, 0, 1, 6);
+  // 픽셀 해 (좌상단)
+  ctx.fillStyle = '#FFD75E';
+  ctx.fillRect(6, 5, 6, 6);
+  ctx.fillStyle = '#FFE9A8';
+  ctx.fillRect(7, 6, 4, 4);
+  // 블록 구름 (2단 뭉게)
+  const cloud = (x: number, y: number, w: number) => {
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(x, y, w, 3);
+    ctx.fillRect(x + 2, y - 2, w - 4, 2);
+    ctx.fillStyle = '#E3F2FB';
+    ctx.fillRect(x, y + 3, w, 1);
+  };
+  cloud(22, 10, 16);
+  cloud(40, 22, 12);
+  cloud(4, 27, 14);
+  return toTexture(canvas);
+}
+
 /**
  * 구역 라벨 빌보드: 항상 카메라를 향하는 스프라이트 (design.md §7.2).
  * 배경 soft, 글자 deep, 테두리 main. 장식용 — 정보는 DOM에 이미 존재.
