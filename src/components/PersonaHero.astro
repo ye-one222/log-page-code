@@ -5,9 +5,10 @@ import { NAV, SITE } from '../config/site';
 import type { FeedItem } from '../lib/posts';
 
 /**
- * 홈 화면: 회전 버튼으로 페르소나를 전환하는 히어로 + 페르소나별 최신 글 피드.
- * 캐릭터는 Three.js 복셀 캐릭터(src/lib/character3d) — 캔버스 하나에서
- * 스킨을 갈아입는 방식이라 페르소나별 마크업은 텍스트/피드만 존재한다.
+ * 홈 화면: "페르소나의 방" 3D 무대 + 페르소나별 최신 글 피드.
+ * 방(src/lib/room3d)의 구역을 탭하거나 도트/회전 버튼을 누르면
+ * 캐릭터가 그 구역으로 걸어가고 텍스트/피드가 함께 전환된다.
+ * 정보(인사말/피드)는 전부 DOM — 3D는 무대일 뿐이다. (design/persona-room/design.md)
  */
 interface Props {
   feeds: Record<PersonaId, FeedItem[]>;
@@ -40,43 +41,49 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
   </div>
 
   <div class="stage-col">
-    <div class="ring" id="persona-ring" style={`border-color: ${PERSONAS[0].color.main}`}>
-      <canvas id="persona-canvas" width="230" height="230" aria-hidden="true"></canvas>
+    <div class="stage" id="persona-stage" style={`border-color: ${PERSONAS[0].color.main}`}>
+      <canvas id="persona-canvas" aria-hidden="true"></canvas>
     </div>
-    <div class="dots" aria-hidden="true">
-      {
-        PERSONAS.map((p, i) => (
-          <span
-            class:list={['dot', { on: i === 0 }]}
-            data-persona={p.id}
-            data-color={p.color.main}
-            data-nav={p.nav}
-          />
-        ))
-      }
-    </div>
-    <button
-      class="rotate-btn"
-      id="persona-rotate"
-      type="button"
-      aria-label="회전 — 다른 나 만나기"
-      title="회전 — 다른 나 만나기"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        width="22"
-        height="22"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
+    <div class="stage-ui">
+      <div class="dots" role="group" aria-label="페르소나 선택">
+        {
+          PERSONAS.map((p, i) => (
+            <button
+              type="button"
+              class:list={['dot', { on: i === 0 }]}
+              data-persona={p.id}
+              data-color={p.color.main}
+              data-nav={p.nav}
+              aria-label={`${p.name}의 나로 전환`}
+              title={`${p.name}의 나`}
+            />
+          ))
+        }
+      </div>
+      <button
+        class="rotate-btn"
+        id="persona-rotate"
+        type="button"
+        aria-label="다음 페르소나로 전환"
+        title="다른 나 만나기"
       >
-        <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
-        <polyline points="21 3 21 9 15 9"></polyline>
-      </svg>
-    </button>
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+          <polyline points="21 3 21 9 15 9"></polyline>
+        </svg>
+      </button>
+    </div>
+    <p class="stage-hint" id="stage-hint">방의 코너를 눌러 다른 나를 만나보세요</p>
   </div>
 </section>
 
@@ -108,8 +115,8 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
   .hero {
     display: flex;
     align-items: center;
-    gap: 40px;
-    padding: 56px 0 40px;
+    gap: 36px;
+    padding: 48px 0 36px;
     flex-wrap: wrap;
   }
 
@@ -143,34 +150,59 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     margin: 0 auto;
   }
 
-  .ring {
-    width: 230px;
-    height: 230px;
-    border-radius: 50%;
+  /* 방 무대: 원형 링 → 라운드 사각 (design.md §8.1) */
+  .stage {
+    width: 460px;
+    max-width: 100%;
+    height: 360px;
+    border-radius: 20px;
     background: var(--surface);
     border: 3px solid transparent;
     overflow: hidden;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.4s ease;
+    /* 세로 스와이프는 페이지 스크롤로 통과, 탭만 씬이 받는다 (§7.1) */
+    touch-action: pan-y;
   }
 
-  .ring canvas {
+  .stage canvas {
     width: 100%;
     height: 100%;
     display: block;
   }
 
+  .stage-ui {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
   .dots {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.15s ease;
+  }
+
+  .dot:hover {
+    transform: scale(1.25);
   }
 
   .rotate-btn {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: 1px solid var(--border-strong);
     background: var(--card);
@@ -199,18 +231,25 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
     transform: rotate(90deg);
   }
 
-  /* 클릭하면 캐릭터 회전과 함께 아이콘도 한 바퀴 */
-  .rotate-btn.spinning svg {
-    transform: rotate(360deg);
-    transition: transform 0.3s ease;
+  .stage-hint {
+    font-size: 12.5px;
+    color: var(--text-3);
   }
 
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border-strong);
-    transition: background 0.3s ease;
+  /* 모바일: 세로 스택 + 캔버스 높이 제한 (design.md §8.2) */
+  @media (max-width: 899px) {
+    .hero {
+      padding-top: 32px;
+    }
+
+    .stage-col {
+      width: 100%;
+    }
+
+    .stage {
+      width: 100%;
+      height: min(56vw, 320px);
+    }
   }
 
   .feeds {
@@ -250,69 +289,73 @@ function sectionHref(persona: (typeof PERSONAS)[number]): string {
 </style>
 
 <script>
-  import { createPersonaCharacter } from '../lib/character3d';
+  import { createPersonaRoom } from '../lib/room3d';
   import type { PersonaId } from '../config/personas';
 
-  const ring = document.getElementById('persona-ring')!;
+  const stage = document.getElementById('persona-stage')!;
   const canvas = document.getElementById('persona-canvas') as HTMLCanvasElement;
   const rotateBtn = document.getElementById('persona-rotate')!;
+  const hint = document.getElementById('stage-hint')!;
   const dots = Array.from(document.querySelectorAll<HTMLElement>('.dot'));
   const navLinks = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-key]'));
   const blocks = Array.from(
     document.querySelectorAll<HTMLElement>('.copy[data-persona], .feed[data-persona]'),
   );
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const personaIds = dots.map((d) => d.dataset.persona as PersonaId);
 
-  // WebGL 미지원 환경에서는 캐릭터 없이 텍스트 전환만 동작한다
-  let character: ReturnType<typeof createPersonaCharacter> | null = null;
+  // WebGL 미지원 환경에서는 방 없이 텍스트/피드 전환만 동작한다
+  let room: ReturnType<typeof createPersonaRoom> | null = null;
   try {
-    character = createPersonaCharacter(canvas, dots[0].dataset.persona as PersonaId);
+    room = createPersonaRoom(canvas, personaIds[0]);
   } catch (error) {
-    console.error('3D 캐릭터 초기화 실패:', error);
-    canvas.hidden = true;
+    console.error('3D 방 초기화 실패:', error);
+    stage.hidden = true;
+    hint.hidden = true;
   }
 
-  let index = 0;
+  let currentId: PersonaId = personaIds[0];
   let busy = false;
 
-  function show(i: number) {
-    const dot = dots[i];
-    const id = dot.dataset.persona;
+  function syncDOM(id: PersonaId): void {
+    const dot = dots.find((d) => d.dataset.persona === id)!;
     for (const block of blocks) block.hidden = block.dataset.persona !== id;
     for (const d of dots) {
       d.classList.toggle('on', d === dot);
       d.style.background = d === dot ? (d.dataset.color ?? '') : '';
     }
-    ring.style.borderColor = dot.dataset.color ?? '';
+    stage.style.borderColor = dot.dataset.color ?? '';
     for (const link of navLinks) {
       link.classList.toggle('active', link.dataset.navKey === dot.dataset.nav);
     }
   }
 
-  rotateBtn.addEventListener('click', () => {
-    if (busy) return;
-    rotateBtn.classList.add('spinning');
-    setTimeout(() => rotateBtn.classList.remove('spinning'), 350);
-    const next = (index + 1) % dots.length;
-    const id = dots[next].dataset.persona as PersonaId;
-
-    if (!character || reduceMotion) {
-      index = next;
-      show(index);
-      character?.setPersona(id);
+  /** 단일 진입점: 구역 탭·도트·회전 버튼 모두 여기로 (design.md §7.3) */
+  function goToPersona(id: PersonaId): void {
+    if (busy || id === currentId) return;
+    currentId = id;
+    syncDOM(id);
+    if (!room) return;
+    if (reduceMotion) {
+      room.go(id, { instant: true });
       return;
     }
-
     busy = true;
-    character
-      .spin(id, () => {
-        index = next;
-        show(index);
-      })
-      .finally(() => {
-        busy = false;
-      });
+    room.go(id).finally(() => {
+      busy = false;
+    });
+  }
+
+  room?.onZoneTap(goToPersona);
+
+  rotateBtn.addEventListener('click', () => {
+    const next = (personaIds.indexOf(currentId) + 1) % personaIds.length;
+    goToPersona(personaIds[next]);
   });
 
-  show(0);
+  for (const dot of dots) {
+    dot.addEventListener('click', () => goToPersona(dot.dataset.persona as PersonaId));
+  }
+
+  syncDOM(currentId);
 </script>

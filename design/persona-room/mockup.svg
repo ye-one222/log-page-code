@@ -1,0 +1,298 @@
+<svg viewBox="0 0 940 760" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <!-- 픽셀 디더 패턴 (2톤 체커, 단색 금지 규칙 표현) -->
+    <pattern id="floorDither" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#C9A87C"/>
+      <rect x="0" y="0" width="4" height="4" fill="#B8946A"/>
+      <rect x="4" y="4" width="4" height="4" fill="#B8946A"/>
+    </pattern>
+    <pattern id="wallDither" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#EFE7D8"/>
+      <rect x="0" y="0" width="3" height="3" fill="#E2D6C1"/>
+    </pattern>
+    <pattern id="wallDitherL" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#E7DDCB"/>
+      <rect x="0" y="0" width="3" height="3" fill="#DBCFB8"/>
+    </pattern>
+  </defs>
+
+  <rect x="0" y="0" width="940" height="760" fill="#FBFAF7"/>
+
+  <!-- ===== 헤더 ===== -->
+  <text x="28" y="34" font-size="18" fill="#2C2C2A" font-weight="bold">페르소나의 방 — 3D 오픈 코너 룸 목업</text>
+  <text x="28" y="52" font-size="11.5" fill="#8A857C">복셀 가구 · 64px 픽셀 텍스처 + NearestFilter · 단색 금지 디더 · 탭 온리 · 걷기+카메라 팬 · 색은 personas.ts에서 파생</text>
+  <rect x="28" y="60" width="884" height="1" fill="#E7E1D6"/>
+
+  <!-- =========================================================== -->
+  <!-- ① 전체 뷰 (아이소메트릭 오픈 코너 룸)                        -->
+  <!-- =========================================================== -->
+  <text x="28" y="84" font-size="13" fill="#4A463F" font-weight="bold">① 전체 뷰 — 오픈 코너 룸 (바닥 + 뒤벽/왼벽 2면, 4구역)</text>
+
+  <!-- 방 무대 프레임 -->
+  <rect x="28" y="96" width="560" height="360" rx="14" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.5"/>
+
+  <!-- · 바닥 (아이소 다이아몬드) · -->
+  <polygon points="308,206 556,320 308,436 60,320" fill="url(#floorDither)" stroke="#A9895F" stroke-width="1.5"/>
+  <!-- 뒤벽 (왼쪽 위 사면) -->
+  <polygon points="60,320 308,206 308,110 60,224" fill="url(#wallDither)" stroke="#CDBFA6" stroke-width="1"/>
+  <!-- 왼벽 (오른쪽 위 사면) -->
+  <polygon points="308,206 556,320 556,224 308,110" fill="url(#wallDitherL)" stroke="#C6B79C" stroke-width="1"/>
+  <!-- 걸레받이 -->
+  <polygon points="60,320 308,206 308,214 60,328" fill="#B8946A"/>
+  <polygon points="308,206 556,320 556,328 308,214" fill="#AD8A61"/>
+
+  <!-- ===== ZONE A 연구원 (뒤-왼, 보라) : 책상·모니터·논문·램프 ===== -->
+  <!-- 러그 -->
+  <polygon points="150,300 214,330 150,360 86,330" fill="#EEEDFE" stroke="#7F77DD" stroke-width="2"/>
+  <!-- 책상 -->
+  <polygon points="120,250 190,282 190,296 120,264" fill="#B8946A"/>
+  <polygon points="120,250 175,224 245,256 190,282" fill="#C9A87C"/>
+  <polygon points="175,224 245,256 245,270 175,238" fill="#AD8A61"/>
+  <!-- 모니터 -->
+  <polygon points="150,206 188,224 188,196 150,178" fill="#2C2C2A"/>
+  <polygon points="153,203 185,219 185,199 153,183" fill="#EEEDFE"/>
+  <rect x="160" y="192" width="18" height="2" fill="#7F77DD"/>
+  <!-- 논문 더미 -->
+  <polygon points="128,258 150,268 150,276 128,266" fill="#FFFFFF" stroke="#D8D8D8" stroke-width="0.5"/>
+  <rect x="132" y="262" width="14" height="1.5" fill="#7F77DD"/>
+  <!-- 데스크 램프 (포인트 광원) -->
+  <line x1="212" y1="272" x2="212" y2="250" stroke="#2C2C2A" stroke-width="2"/>
+  <polygon points="206,250 218,250 214,242 210,242" fill="#7F77DD"/>
+  <circle cx="212" cy="248" r="9" fill="#7F77DD" opacity="0.18"/>
+  <text x="150" y="378" font-size="9.5" fill="#3C3489" text-anchor="middle" font-weight="bold">연구원</text>
+
+  <!-- ===== ZONE B 크리에이터 (뒤-오, 청록) : 작업대·삼각대·공구보드 ===== -->
+  <polygon points="430,300 494,330 430,360 366,330" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+  <!-- 작업대(캐비닛) -->
+  <polygon points="386,260 456,292 456,312 386,280" fill="#178A66"/>
+  <polygon points="386,260 441,234 511,266 456,292" fill="#C9A87C"/>
+  <polygon points="441,234 511,266 511,286 456,312" fill="#0C5A45"/>
+  <rect x="470" y="284" width="4" height="4" fill="#E8C36A"/>
+  <!-- 삼각대 + 카메라 -->
+  <line x1="470" y1="300" x2="462" y2="252" stroke="#2C2C2A" stroke-width="1.5"/>
+  <line x1="478" y1="300" x2="462" y2="252" stroke="#2C2C2A" stroke-width="1.5"/>
+  <line x1="470" y1="300" x2="474" y2="252" stroke="#2C2C2A" stroke-width="1.5"/>
+  <rect x="454" y="240" width="16" height="10" fill="#2C2C2A"/>
+  <rect x="466" y="242" width="6" height="6" fill="#5F5E5A"/>
+  <!-- 공구보드 (왼벽) -->
+  <polygon points="404,214 448,236 448,206 404,184" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+  <rect x="414" y="200" width="3" height="8" fill="#2C2C2A" transform="skewY(24)"/>
+  <text x="430" y="378" font-size="9.5" fill="#085041" text-anchor="middle" font-weight="bold">크리에이터</text>
+
+  <!-- ===== ZONE C 독서인 (앞-오, 코랄) : 책장·안락의자·스탠드 ===== -->
+  <polygon points="430,360 494,390 430,420 366,390" fill="#FAECE7" stroke="#D85A30" stroke-width="2"/>
+  <!-- 책장 -->
+  <polygon points="470,300 512,322 512,378 470,356" fill="#B8946A"/>
+  <polygon points="470,300 500,284 542,306 512,322" fill="#C9A87C"/>
+  <rect x="476" y="310" width="30" height="12" fill="#712B13" opacity="0.9" transform="skewY(28)"/>
+  <g transform="translate(474,326) skewY(28)">
+    <rect x="0" y="0" width="4" height="12" fill="#D85A30"/>
+    <rect x="5" y="0" width="3" height="12" fill="#FAECE7"/>
+    <rect x="9" y="0" width="4" height="12" fill="#712B13"/>
+    <rect x="14" y="0" width="3" height="12" fill="#C9A87C"/>
+    <rect x="18" y="0" width="4" height="12" fill="#D85A30"/>
+  </g>
+  <!-- 안락의자 (니트, 가로 줄무늬) -->
+  <polygon points="420,362 452,378 452,394 420,378" fill="#D85A30"/>
+  <polygon points="420,362 440,352 472,368 452,378" fill="#E37E56"/>
+  <rect x="424" y="366" width="26" height="1.5" fill="#C24E28" transform="skewY(26)"/>
+  <!-- 플로어 스탠드 -->
+  <line x1="388" y1="392" x2="388" y2="352" stroke="#B8946A" stroke-width="2"/>
+  <polygon points="382,352 394,352 391,344 385,344" fill="#FAECE7"/>
+  <circle cx="388" cy="350" r="9" fill="#D85A30" opacity="0.16"/>
+  <text x="430" y="438" font-size="9.5" fill="#712B13" text-anchor="middle" font-weight="bold">독서인</text>
+
+  <!-- ===== ZONE D 밴드인 (앞-왼, 핑크) : 앰프·기타·마이크·포스터 ===== -->
+  <polygon points="150,360 214,390 150,420 86,390" fill="#FBEAF0" stroke="#D4537E" stroke-width="2"/>
+  <!-- 앰프 -->
+  <polygon points="104,342 146,364 146,392 104,370" fill="#2C2C2A"/>
+  <polygon points="104,342 134,326 176,348 146,364" fill="#3A3A38"/>
+  <rect x="112" y="352" width="30" height="20" fill="#4A4A46" opacity="0.6" transform="skewY(28)"/>
+  <rect x="138" y="330" width="3" height="3" fill="#D4537E"/>
+  <!-- 기타 스탠드 + 일렉기타 -->
+  <line x1="182" y1="386" x2="176" y2="346" stroke="#2C2C2A" stroke-width="1.5"/>
+  <line x1="190" y1="386" x2="176" y2="346" stroke="#2C2C2A" stroke-width="1.5"/>
+  <g transform="translate(168,344) rotate(18)">
+    <rect x="0" y="0" width="12" height="16" rx="2" fill="#8B2E4E"/>
+    <rect x="3" y="4" width="6" height="6" fill="#F0E0E8"/>
+    <rect x="4" y="-22" width="4" height="24" fill="#5C3A21"/>
+  </g>
+  <!-- 마이크 스탠드 -->
+  <line x1="196" y1="392" x2="196" y2="352" stroke="#2C2C2A" stroke-width="1.5"/>
+  <rect x="192" y="346" width="8" height="7" rx="2" fill="#5F5E5A"/>
+  <!-- 포스터 (뒤벽) -->
+  <polygon points="118,236 152,254 152,220 118,202" fill="#72243E"/>
+  <polygon points="128,232 142,240 138,226 132,224" fill="#D4537E"/>
+  <text x="150" y="438" font-size="9.5" fill="#72243E" text-anchor="middle" font-weight="bold">밴드인</text>
+
+  <!-- ===== 캐릭터 (방 중앙, 걷기 중 실루엣) ===== -->
+  <g transform="translate(300,318)">
+    <!-- 다리 교차(걷는 중) -->
+    <rect x="-9" y="16" width="7" height="20" fill="#5C6672" transform="rotate(-14 -5 16)"/>
+    <rect x="2" y="16" width="7" height="20" fill="#5C6672" transform="rotate(16 5 16)"/>
+    <!-- 몸통(랩코트 톤 예시) -->
+    <rect x="-9" y="-6" width="18" height="24" fill="#FFFFFF" stroke="#E4E1DA" stroke-width="0.5"/>
+    <!-- 팔 -->
+    <rect x="-15" y="-4" width="6" height="20" fill="#F2F0EA" transform="rotate(12 -12 -4)"/>
+    <rect x="9" y="-4" width="6" height="20" fill="#F2F0EA" transform="rotate(-12 12 -4)"/>
+    <!-- 머리 -->
+    <rect x="-8" y="-30" width="16" height="16" fill="#F2C9A3"/>
+    <!-- 머리카락 -->
+    <rect x="-9" y="-32" width="18" height="8" fill="#E8A6B8"/>
+    <rect x="-9" y="-24" width="4" height="14" fill="#E8A6B8"/>
+    <rect x="5" y="-24" width="4" height="14" fill="#E8A6B8"/>
+    <rect x="-4" y="-22" width="2" height="2" fill="#2C2C2A"/>
+    <rect x="2" y="-22" width="2" height="2" fill="#2C2C2A"/>
+  </g>
+  <!-- 걷기 경로(현재→목표) -->
+  <path d="M150,330 Q300,340 430,330" fill="none" stroke="#7F77DD" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.7"/>
+  <text x="300" y="452" font-size="9" fill="#8A857C" text-anchor="middle">걷기 경로: 현재 러그 → 방 중앙 경유 → 목표 러그 (다리 교차 · 900~1200ms)</text>
+
+  <!-- 방향/조명 주석 -->
+  <text x="576" y="118" font-size="9" fill="#9A9184" text-anchor="end">뒤벽 −z</text>
+  <text x="70" y="200" font-size="9" fill="#9A9184">왼벽 −x</text>
+
+  <!-- =========================================================== -->
+  <!-- ② 포커스 뷰 (한 구역 클로즈업 + 도착 idle)                  -->
+  <!-- =========================================================== -->
+  <text x="612" y="84" font-size="13" fill="#4A463F" font-weight="bold">② 포커스 뷰 — 독서인 구역 클로즈업</text>
+  <rect x="612" y="96" width="300" height="222" rx="14" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.5"/>
+  <rect x="612" y="96" width="300" height="222" rx="14" fill="#D85A30" opacity="0.05"/>
+
+  <!-- 바닥/벽 클로즈업 -->
+  <polygon points="762,150 892,210 762,270 632,210" fill="url(#floorDither)" stroke="#A9895F" stroke-width="1"/>
+  <polygon points="632,210 762,150 762,108 632,168" fill="url(#wallDither)" stroke="#CDBFA6" stroke-width="1"/>
+  <!-- 책장 크게 -->
+  <polygon points="700,150 748,174 748,244 700,220" fill="#B8946A"/>
+  <polygon points="700,150 736,132 784,156 748,174" fill="#C9A87C"/>
+  <g transform="translate(704,178) skewY(26)">
+    <rect x="0" y="0" width="6" height="18" fill="#D85A30"/>
+    <rect x="7" y="0" width="5" height="18" fill="#FAECE7"/>
+    <rect x="13" y="0" width="6" height="18" fill="#712B13"/>
+    <rect x="20" y="0" width="5" height="18" fill="#C9A87C"/>
+    <rect x="26" y="0" width="6" height="18" fill="#D85A30"/>
+  </g>
+  <!-- 러그 -->
+  <polygon points="740,240 800,268 740,296 680,268" fill="#FAECE7" stroke="#D85A30" stroke-width="2"/>
+  <!-- 안락의자 -->
+  <polygon points="756,236 792,254 792,276 756,258" fill="#D85A30"/>
+  <polygon points="756,236 780,224 816,242 792,254" fill="#E37E56"/>
+  <rect x="760" y="242" width="30" height="1.6" fill="#C24E28" transform="skewY(26)"/>
+  <!-- 캐릭터: 의자에 앉음(도착 idle) + 책 -->
+  <g transform="translate(770,232)">
+    <rect x="-8" y="-4" width="16" height="16" fill="#D85A30"/> <!-- 니트 상의 -->
+    <rect x="-8" y="0" width="16" height="1.4" fill="#C24E28"/>
+    <rect x="-9" y="12" width="8" height="8" fill="#5C6672"/> <!-- 접힌 무릎 -->
+    <rect x="1" y="12" width="8" height="8" fill="#5C6672"/>
+    <rect x="-8" y="-22" width="16" height="16" fill="#F2C9A3"/>
+    <rect x="-9" y="-24" width="18" height="8" fill="#E8A6B8"/>
+    <rect x="-4" y="-14" width="2" height="2" fill="#2C2C2A"/>
+    <rect x="2" y="-14" width="2" height="2" fill="#2C2C2A"/>
+    <!-- 펼친 책 -->
+    <polygon points="-6,4 0,6 0,12 -6,10" fill="#FFFFFF"/>
+    <polygon points="0,6 6,4 6,10 0,12" fill="#F1EFE8"/>
+  </g>
+  <!-- 플로어 스탠드 -->
+  <line x1="694" y1="270" x2="694" y2="222" stroke="#B8946A" stroke-width="2"/>
+  <polygon points="688,222 700,222 697,212 691,212" fill="#FAECE7"/>
+  <circle cx="694" cy="220" r="12" fill="#D85A30" opacity="0.18"/>
+
+  <text x="762" y="308" font-size="9.5" fill="#712B13" text-anchor="middle" font-weight="bold">도착 idle: 안락의자에 앉아 책 읽기 · 포인트 광원 코랄</text>
+
+  <!-- 카메라 포즈 주석 -->
+  <text x="628" y="130" font-size="8.5" fill="#9A9184">cam pos (3.0,3.0,6.2)</text>
+  <text x="628" y="142" font-size="8.5" fill="#9A9184">lookAt (1.8,1.2,1.4) fov30°</text>
+
+  <!-- =========================================================== -->
+  <!-- ③ 탭 어포던스 다이어그램                                     -->
+  <!-- =========================================================== -->
+  <text x="612" y="344" font-size="13" fill="#4A463F" font-weight="bold">③ 탭 어포던스 (비활성 구역)</text>
+  <rect x="612" y="356" width="300" height="150" rx="14" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.5"/>
+
+  <!-- 라벨 빌보드 -->
+  <rect x="636" y="378" width="70" height="24" rx="6" fill="#EEEDFE" stroke="#7F77DD" stroke-width="1.5"/>
+  <text x="671" y="394" font-size="11" fill="#3C3489" text-anchor="middle" font-weight="bold">연구원</text>
+  <text x="712" y="390" font-size="9" fill="#8A857C">라벨 빌보드(soft/deep)</text>
+  <text x="712" y="402" font-size="9" fill="#8A857C">항상 카메라를 향함</text>
+
+  <!-- 러그 하이라이트 펄스 -->
+  <polygon points="671,436 711,454 671,472 631,454" fill="#EEEDFE" stroke="#7F77DD" stroke-width="2"/>
+  <polygon points="671,430 717,454 671,478 625,454" fill="none" stroke="#7F77DD" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6"/>
+  <text x="732" y="450" font-size="9" fill="#8A857C">러그 테두리 main 펄스</text>
+  <text x="732" y="462" font-size="9" fill="#8A857C">(투명도 0.5~1.0, 3s)</text>
+
+  <!-- 히트 프록시 -->
+  <polygon points="671,436 711,454 671,472 631,454" fill="#7F77DD" opacity="0.08"/>
+  <rect x="631" y="422" width="80" height="56" fill="none" stroke="#7F77DD" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+  <text x="636" y="418" font-size="8.5" fill="#7F77DD">투명 히트 프록시 (탭 타깃 넉넉히, 44px+)</text>
+
+  <!-- =========================================================== -->
+  <!-- ④ 반응형 레이아웃 와이어프레임                               -->
+  <!-- =========================================================== -->
+  <text x="28" y="490" font-size="13" fill="#4A463F" font-weight="bold">④ 반응형 레이아웃 — 데스크톱(2단) / 모바일(세로 스택 · 탭 온리)</text>
+
+  <!-- 데스크톱 와이어 -->
+  <rect x="28" y="504" width="360" height="228" rx="10" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.5"/>
+  <text x="40" y="524" font-size="10.5" fill="#8A857C" font-weight="bold">데스크톱 ≥900px</text>
+  <!-- 좌 copy -->
+  <rect x="44" y="536" width="150" height="180" rx="6" fill="#F6F2EA" stroke="#E0D8C9" stroke-width="1"/>
+  <rect x="56" y="550" width="60" height="14" rx="7" fill="#EEEDFE"/>
+  <rect x="56" y="574" width="120" height="12" fill="#E7E1D6"/>
+  <rect x="56" y="592" width="100" height="8" fill="#EDE7DC"/>
+  <rect x="56" y="606" width="110" height="8" fill="#EDE7DC"/>
+  <rect x="56" y="628" width="70" height="20" rx="10" fill="#E7E1D6"/>
+  <text x="119" y="700" font-size="9" fill="#9A9184" text-anchor="middle">copy-col (텍스트 DOM)</text>
+  <!-- 우 방 캔버스 -->
+  <rect x="204" y="536" width="168" height="132" rx="8" fill="#F4EFE6" stroke="#D8CFBE" stroke-width="1.2"/>
+  <polygon points="288,566 350,594 288,622 226,594" fill="url(#floorDither)" opacity="0.9"/>
+  <text x="288" y="600" font-size="8.5" fill="#8A857C" text-anchor="middle">방 캔버스 460×360</text>
+  <!-- dots+버튼 -->
+  <circle cx="248" cy="684" r="4" fill="#7F77DD"/><circle cx="262" cy="684" r="4" fill="#CFC8BB"/><circle cx="276" cy="684" r="4" fill="#CFC8BB"/><circle cx="290" cy="684" r="4" fill="#CFC8BB"/>
+  <circle cx="330" cy="684" r="10" fill="none" stroke="#B9B1A4" stroke-width="1.5"/>
+  <text x="288" y="712" font-size="9" fill="#9A9184" text-anchor="middle">보조 UI: dots + 회전 버튼 (3D 없이도 전환)</text>
+
+  <!-- 모바일 와이어 -->
+  <rect x="404" y="504" width="184" height="228" rx="10" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.5"/>
+  <text x="416" y="524" font-size="10.5" fill="#8A857C" font-weight="bold">모바일 &lt;900px (세로 스택)</text>
+  <rect x="452" y="534" width="88" height="192" rx="12" fill="#F6F2EA" stroke="#D8CFBE" stroke-width="1.2"/>
+  <!-- 1 copy -->
+  <rect x="460" y="544" width="40" height="9" rx="4" fill="#EEEDFE"/>
+  <rect x="460" y="558" width="72" height="7" fill="#E7E1D6"/>
+  <rect x="460" y="569" width="60" height="5" fill="#EDE7DC"/>
+  <!-- 2 캔버스 -->
+  <rect x="460" y="580" width="72" height="52" rx="5" fill="#F4EFE6" stroke="#D8CFBE" stroke-width="1"/>
+  <polygon points="496,592 524,606 496,620 468,606" fill="url(#floorDither)" opacity="0.85"/>
+  <text x="496" y="628" font-size="6.5" fill="#8A857C" text-anchor="middle">100%×min(56vw,320)</text>
+  <!-- 3 dots -->
+  <circle cx="478" cy="644" r="3" fill="#7F77DD"/><circle cx="490" cy="644" r="3" fill="#CFC8BB"/><circle cx="502" cy="644" r="3" fill="#CFC8BB"/><circle cx="514" cy="644" r="3" fill="#CFC8BB"/>
+  <!-- 4 피드 -->
+  <rect x="460" y="656" width="34" height="26" rx="4" fill="#EDE7DC"/>
+  <rect x="498" y="656" width="34" height="26" rx="4" fill="#EDE7DC"/>
+  <rect x="460" y="688" width="34" height="26" rx="4" fill="#EDE7DC"/>
+  <rect x="498" y="688" width="34" height="26" rx="4" fill="#EDE7DC"/>
+  <text x="496" y="726" font-size="8" fill="#9A9184" text-anchor="middle">copy → 캔버스 → dots → 피드</text>
+
+  <!-- 주석 패널 -->
+  <rect x="604" y="504" width="308" height="228" rx="10" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.5"/>
+  <text x="618" y="524" font-size="10.5" fill="#4A463F" font-weight="bold">핵심 인터랙션 규칙</text>
+  <text x="618" y="544" font-size="9.5" fill="#5A554C">• 탭 온리: 가구 구역 탭 → 그 페르소나로. 오빗/드래그 없음</text>
+  <text x="618" y="560" font-size="9.5" fill="#5A554C">• 탭 판정: 이동&lt;10px·400ms → touch-action:pan-y (스크롤 통과)</text>
+  <text x="618" y="576" font-size="9.5" fill="#5A554C">• 전환: 캐릭터 걸어감(다리 교차) + 카메라 80ms lag 팬</text>
+  <text x="618" y="592" font-size="9.5" fill="#5A554C">• busy 락: 전환 중 모든 탭/버튼 무시</text>
+  <text x="618" y="608" font-size="9.5" fill="#5A554C">• 단일 진입점 goToPersona(id): 탭·dots·버튼 공유 → DOM 싱크</text>
+  <text x="618" y="624" font-size="9.5" fill="#5A554C">• reduced-motion → cutTo (즉시 컷) / WebGL 실패 → dots만</text>
+  <text x="618" y="640" font-size="9.5" fill="#5A554C">• 조명: Hemi+Dir + 활성 PointLight 1개(색=main) lerp</text>
+  <text x="618" y="656" font-size="9.5" fill="#5A554C">• 성능: pixelRatio≤2, 뷰포트밖/비활성 탭 rAF 정지</text>
+  <text x="618" y="672" font-size="9.5" fill="#5A554C">• 색·러그·라벨·조명 전부 personas.ts에서 파생</text>
+  <text x="618" y="688" font-size="9.5" fill="#5A554C">• 방 중립색(우드/플라스터)만 하드코딩 허용</text>
+
+  <!-- 팔레트 스와치 -->
+  <text x="618" y="712" font-size="9" fill="#8A857C">구역 색:</text>
+  <rect x="660" y="704" width="12" height="10" fill="#7F77DD"/><text x="675" y="712" font-size="8.5" fill="#8A857C">연구원</text>
+  <rect x="710" y="704" width="12" height="10" fill="#1D9E75"/><text x="725" y="712" font-size="8.5" fill="#8A857C">크리에이터</text>
+  <rect x="775" y="704" width="12" height="10" fill="#D85A30"/><text x="790" y="712" font-size="8.5" fill="#8A857C">독서인</text>
+  <rect x="830" y="704" width="12" height="10" fill="#D4537E"/><text x="845" y="712" font-size="8.5" fill="#8A857C">밴드인</text>
+
+  <rect x="28" y="746" width="884" height="1" fill="#E7E1D6"/>
+  <text x="28" y="756" font-size="9" fill="#B0A99C">design/persona-room/design.md 참조 · 기존 3d-character 스타일 규칙 계승 (BoxGeometry · NearestFilter · 디더 · 원기둥/구 금지)</text>
+</svg>
