@@ -153,6 +153,7 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
     camPose.look.copy(preset.look);
     camPose.fov = preset.fov;
     applyZoneStates();
+    renderOnce();
   }
 
   // 초기 배치: 캐릭터는 초기 페르소나 구역, 카메라는 방 전체 뷰(establishing shot)
@@ -270,8 +271,9 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
       armRx = -0.95;
       armLx = -1.15;
     } else if (active === 'reader') {
-      // 안락의자에 앉아 책 읽기: 무릎 접고 양손에 책
-      kneeFold = 1.35;
+      // 안락의자에 앉아 책 읽기: 무릎을 앞으로 접고 양손에 책
+      // (이 리그는 rotation.x 음수가 앞쪽 — 양수면 다리가 등받이 뒤로 숨는다)
+      kneeFold = -1.3;
       armRx = -0.62;
       armLx = -0.62;
       if (now >= nextFlipAt) {
@@ -393,6 +395,7 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
       camPose.look.copy(preset.look);
       camPose.fov = preset.fov;
     }
+    renderOnce();
   }
   let hasNavigated = false;
   const resizeObserver = new ResizeObserver(resize);
@@ -489,6 +492,18 @@ export function createPersonaRoom(canvas: HTMLCanvasElement, initial: PersonaId)
     });
   }
 
+  /** rAF 없이 현재 상태를 1프레임 그린다 (백그라운드 탭·초기 진입 대비) */
+  function renderOnce(): void {
+    character.group.position.set(charPos.x, charY, charPos.z);
+    character.group.rotation.y = charYaw;
+    camera.position.copy(camPose.pos);
+    camera.fov = camPose.fov;
+    camera.updateProjectionMatrix();
+    camera.lookAt(camPose.look);
+    renderer.render(scene, camera);
+  }
+
+  renderOnce();
   scheduleTick();
 
   return {

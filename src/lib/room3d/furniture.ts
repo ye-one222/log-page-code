@@ -360,7 +360,7 @@ export function buildZone(persona: Persona): Zone {
   };
 }
 
-/** 방 껍데기: 바닥 + 뒤벽 + 왼벽 + 걸레받이 (design.md §1) */
+/** 방 껍데기: 바닥 + 뒤벽 + 좌/우벽 + 걸레받이 (design.md §1, §13) */
 export function buildShell(
   floorMap: THREE.Texture,
   wallMap: THREE.Texture,
@@ -375,10 +375,14 @@ export function buildShell(
     mesh.position.set(pos[0] * U, pos[1] * U, pos[2] * U);
     g.add(mesh);
   };
-  add(80, 1, 80, floorMap, undefined, [0, -0.5, 0]);
+  // 좌우 벽·바닥은 카메라 최대 z(≈11 world)보다 앞(+120u)까지 연장 —
+  // 어떤 카메라 프리셋에서도 프레임 가장자리에 빈 배경이 보이지 않는다 (§13)
+  add(80, 1, 160, floorMap, undefined, [0, -0.5, 40]);
   add(80, 44, 1, wallMap, undefined, [0, 22, -40.5]);
-  add(1, 44, 80, wallDarkMap, undefined, [-40.5, 22, 0]);
+  add(1, 44, 160, wallDarkMap, undefined, [-40.5, 22, 40]);
+  add(1, 44, 160, wallMap, undefined, [40.5, 22, 40]);
   add(80, 2, 1, null, NEUTRAL.woodShade, [0, 1, -39.8]);
-  add(1, 2, 80, null, NEUTRAL.woodShade, [-39.8, 1, 0]);
+  add(1, 2, 160, null, NEUTRAL.woodShade, [-39.8, 1, 40]);
+  add(1, 2, 160, null, NEUTRAL.woodShade, [39.8, 1, 40]);
   return g;
 }
