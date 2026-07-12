@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="760" viewBox="0 0 1080 760" role="img" aria-labelledby="title desc">
+  <title id="title">Persona room camera presets</title>
+  <desc id="desc">Top-down XZ floor plan showing each camera position, lookAt target, field of view, and Y height for the room3d camera presets.</desc>
+
+  <defs>
+    <pattern id="floor-grid" width="38" height="38" patternUnits="userSpaceOnUse">
+      <path d="M 38 0 L 0 0 0 38" fill="none" stroke="#D8C8AE" stroke-width="1" opacity="0.5" />
+    </pattern>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#3A3328" flood-opacity="0.16" />
+    </filter>
+    <marker id="arrow-overview" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5C646A" />
+    </marker>
+    <marker id="arrow-researcher" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7F77DD" />
+    </marker>
+    <marker id="arrow-creator" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1D9E75" />
+    </marker>
+    <marker id="arrow-reader" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#D85A30" />
+    </marker>
+    <marker id="arrow-musician" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#D4537E" />
+    </marker>
+  </defs>
+
+  <rect width="1080" height="760" fill="#F7F1E7" />
+  <text x="64" y="48" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#2C2C2A">room3d 카메라 프리셋 맵</text>
+  <text x="64" y="75" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" fill="#6E675C">src/lib/room3d/index.ts의 CAM_PRESETS 기준. 점은 camera.position, 화살촉은 lookAt, 각도 표기는 fov입니다.</text>
+
+  <g id="top-down-map" filter="url(#soft-shadow)">
+    <rect x="82" y="94" width="368" height="596" rx="10" fill="#F3E4CB" stroke="#B8946A" stroke-width="2" />
+    <rect x="82" y="94" width="368" height="596" rx="10" fill="url(#floor-grid)" opacity="0.85" />
+    <path d="M 112.6 82.6 L 416.6 82.6" stroke="#8D7655" stroke-width="12" stroke-linecap="round" />
+    <path d="M 112.6 82.6 L 112.6 690.6" stroke="#B8A381" stroke-width="12" stroke-linecap="round" />
+    <path d="M 416.6 82.6 L 416.6 690.6" stroke="#C9B590" stroke-width="12" stroke-linecap="round" />
+    <text x="160" y="104" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5A4A32">뒤벽 z=-4</text>
+    <text x="236" y="677" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5A4A32">+z 앞쪽 / 카메라 쪽</text>
+
+    <rect x="128" y="112" width="136" height="136" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="2" stroke-dasharray="6 5" opacity="0.72" />
+    <rect x="266" y="112" width="136" height="136" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2" stroke-dasharray="6 5" opacity="0.72" />
+    <rect x="266" y="250" width="136" height="136" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="2" stroke-dasharray="6 5" opacity="0.72" />
+    <rect x="128" y="250" width="136" height="136" rx="8" fill="#FBEAF0" stroke="#D4537E" stroke-width="2" stroke-dasharray="6 5" opacity="0.72" />
+
+    <text x="144" y="134" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#3C3489">연구원</text>
+    <text x="282" y="134" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#085041">크리에이터</text>
+    <text x="282" y="272" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#712B13">독서인</text>
+    <text x="144" y="272" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#72243E">밴드인</text>
+
+    <line x1="264.6" y1="82.6" x2="264.6" y2="392" stroke="#8B7A60" stroke-width="1.4" stroke-dasharray="4 5" opacity="0.7" />
+    <line x1="112.6" y1="234.6" x2="416.6" y2="234.6" stroke="#8B7A60" stroke-width="1.4" stroke-dasharray="4 5" opacity="0.7" />
+    <circle cx="264.6" cy="234.6" r="5" fill="#2C2C2A" />
+    <text x="274" y="229" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#2C2C2A">O</text>
+
+    <g id="stands">
+      <circle cx="196.2" cy="173.8" r="8" fill="#FFFFFF" stroke="#7F77DD" stroke-width="3" />
+      <circle cx="333" cy="173.8" r="8" fill="#FFFFFF" stroke="#1D9E75" stroke-width="3" />
+      <circle cx="333" cy="287.8" r="8" fill="#FFFFFF" stroke="#D85A30" stroke-width="3" />
+      <circle cx="196.2" cy="287.8" r="8" fill="#FFFFFF" stroke="#D4537E" stroke-width="3" />
+      <text x="182" y="196" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#3C3489">stand</text>
+      <text x="319" y="196" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#085041">stand</text>
+      <text x="319" y="310" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#712B13">stand</text>
+      <text x="182" y="310" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="11" fill="#72243E">stand</text>
+    </g>
+
+    <g id="camera-rays" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 287.4 629.8 L 257 234.6" stroke="#5C646A" stroke-width="3.4" opacity="0.88" marker-end="url(#arrow-overview)" />
+      <path d="M 276 466.4 L 188.6 158.6" stroke="#7F77DD" stroke-width="3.4" opacity="0.88" marker-end="url(#arrow-researcher)" />
+      <path d="M 355.8 470.2 L 329.2 151" stroke="#1D9E75" stroke-width="3.4" opacity="0.88" marker-end="url(#arrow-creator)" />
+      <path d="M 378.6 500.6 L 336.8 280.2" stroke="#D85A30" stroke-width="3.4" opacity="0.88" marker-end="url(#arrow-reader)" />
+      <path d="M 158.2 508.2 L 203.8 272.6" stroke="#D4537E" stroke-width="3.4" opacity="0.88" marker-end="url(#arrow-musician)" />
+    </g>
+
+    <g id="look-targets">
+      <circle cx="257" cy="234.6" r="5.5" fill="#5C646A" stroke="#FFFFFF" stroke-width="2" />
+      <circle cx="188.6" cy="158.6" r="5.5" fill="#7F77DD" stroke="#FFFFFF" stroke-width="2" />
+      <circle cx="329.2" cy="151" r="5.5" fill="#1D9E75" stroke="#FFFFFF" stroke-width="2" />
+      <circle cx="336.8" cy="280.2" r="5.5" fill="#D85A30" stroke="#FFFFFF" stroke-width="2" />
+      <circle cx="203.8" cy="272.6" r="5.5" fill="#D4537E" stroke="#FFFFFF" stroke-width="2" />
+    </g>
+
+    <g id="camera-positions" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif">
+      <circle cx="287.4" cy="629.8" r="11" fill="#5C646A" stroke="#FFFFFF" stroke-width="3" />
+      <text x="303" y="634" font-size="12" font-weight="700" fill="#2C2C2A">overview · 34°</text>
+
+      <circle cx="276" cy="466.4" r="10" fill="#7F77DD" stroke="#FFFFFF" stroke-width="3" />
+      <text x="196" y="458" font-size="12" font-weight="700" fill="#3C3489">researcher · 30°</text>
+
+      <circle cx="355.8" cy="470.2" r="10" fill="#1D9E75" stroke="#FFFFFF" stroke-width="3" />
+      <text x="371" y="466" font-size="12" font-weight="700" fill="#085041">creator · 30°</text>
+
+      <circle cx="378.6" cy="500.6" r="10" fill="#D85A30" stroke="#FFFFFF" stroke-width="3" />
+      <text x="392" y="505" font-size="12" font-weight="700" fill="#712B13">reader · 30°</text>
+
+      <circle cx="158.2" cy="508.2" r="10" fill="#D4537E" stroke="#FFFFFF" stroke-width="3" />
+      <text x="171" y="518" font-size="12" font-weight="700" fill="#72243E">musician · 30°</text>
+    </g>
+
+    <g id="axis" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" fill="#2C2C2A">
+      <path d="M 112 720 L 178 720" stroke="#2C2C2A" stroke-width="2.2" marker-end="url(#arrow-overview)" />
+      <path d="M 112 720 L 112 684" stroke="#2C2C2A" stroke-width="2.2" marker-end="url(#arrow-overview)" />
+      <text x="184" y="724" font-size="12">+x 오른쪽</text>
+      <text x="82" y="686" font-size="12">-z 뒤</text>
+    </g>
+  </g>
+
+  <g id="legend" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif">
+    <rect x="530" y="112" width="488" height="270" rx="10" fill="#FFF8EE" stroke="#D6C3A6" />
+    <text x="554" y="145" font-size="17" font-weight="700" fill="#2C2C2A">프리셋 값</text>
+    <text x="554" y="170" font-size="12" fill="#6E675C">pos는 카메라 위치, look은 시선 중심입니다. y가 높을수록 더 위에서 내려봅니다.</text>
+
+    <g font-size="12" fill="#2C2C2A">
+      <text x="574" y="207" font-weight="700">overview</text>
+      <circle cx="558" cy="203" r="5" fill="#5C646A" />
+      <text x="670" y="207">pos (0.6, 5.8, 10.4)</text>
+      <text x="842" y="207">look (-0.2, 1.0, 0.0)</text>
+
+      <text x="574" y="242" font-weight="700">researcher</text>
+      <circle cx="558" cy="238" r="5" fill="#7F77DD" />
+      <text x="670" y="242">pos (0.3, 3.4, 6.1)</text>
+      <text x="842" y="242">look (-2.0, 1.55, -2.0)</text>
+
+      <text x="574" y="277" font-weight="700">creator</text>
+      <circle cx="558" cy="273" r="5" fill="#1D9E75" />
+      <text x="670" y="277">pos (2.4, 3.3, 6.2)</text>
+      <text x="842" y="277">look (1.7, 1.6, -2.2)</text>
+
+      <text x="574" y="312" font-weight="700">reader</text>
+      <circle cx="558" cy="308" r="5" fill="#D85A30" />
+      <text x="670" y="312">pos (3.0, 3.2, 7.0)</text>
+      <text x="842" y="312">look (1.9, 1.0, 1.2)</text>
+
+      <text x="574" y="347" font-weight="700">musician</text>
+      <circle cx="558" cy="343" r="5" fill="#D4537E" />
+      <text x="670" y="347">pos (-2.8, 3.5, 7.2)</text>
+      <text x="842" y="347">look (-1.6, 1.2, 1.0)</text>
+    </g>
+  </g>
+
+  <g id="height-chart" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif">
+    <rect x="530" y="414" width="488" height="236" rx="10" fill="#FFF8EE" stroke="#D6C3A6" />
+    <text x="554" y="446" font-size="17" font-weight="700" fill="#2C2C2A">옆에서 본 높이(y)</text>
+    <text x="554" y="471" font-size="12" fill="#6E675C">큰 점은 카메라 높이, 작은 점은 lookAt 높이입니다.</text>
+
+    <line x1="580" y1="620" x2="978" y2="620" stroke="#B8A381" stroke-width="1.5" />
+    <line x1="580" y1="530" x2="978" y2="530" stroke="#D8C8AE" stroke-width="1" stroke-dasharray="4 5" />
+    <line x1="580" y1="440" x2="978" y2="440" stroke="#D8C8AE" stroke-width="1" stroke-dasharray="4 5" />
+    <text x="552" y="624" font-size="11" fill="#6E675C">y=0</text>
+    <text x="552" y="534" font-size="11" fill="#6E675C">y=3</text>
+    <text x="552" y="444" font-size="11" fill="#6E675C">y=6</text>
+
+    <g stroke-width="2.5" stroke-linecap="round">
+      <line x1="628" y1="446" x2="628" y2="590" stroke="#5C646A" opacity="0.45" />
+      <line x1="706" y1="518" x2="706" y2="573.5" stroke="#7F77DD" opacity="0.45" />
+      <line x1="784" y1="521" x2="784" y2="572" stroke="#1D9E75" opacity="0.45" />
+      <line x1="862" y1="524" x2="862" y2="590" stroke="#D85A30" opacity="0.45" />
+      <line x1="940" y1="515" x2="940" y2="584" stroke="#D4537E" opacity="0.45" />
+    </g>
+
+    <g>
+      <circle cx="628" cy="446" r="8" fill="#5C646A" />
+      <circle cx="628" cy="590" r="4.5" fill="#5C646A" />
+      <circle cx="706" cy="518" r="8" fill="#7F77DD" />
+      <circle cx="706" cy="573.5" r="4.5" fill="#7F77DD" />
+      <circle cx="784" cy="521" r="8" fill="#1D9E75" />
+      <circle cx="784" cy="572" r="4.5" fill="#1D9E75" />
+      <circle cx="862" cy="524" r="8" fill="#D85A30" />
+      <circle cx="862" cy="590" r="4.5" fill="#D85A30" />
+      <circle cx="940" cy="515" r="8" fill="#D4537E" />
+      <circle cx="940" cy="584" r="4.5" fill="#D4537E" />
+    </g>
+
+    <g font-size="11" fill="#2C2C2A" text-anchor="middle">
+      <text x="628" y="641">전체</text>
+      <text x="706" y="641">연구</text>
+      <text x="784" y="641">제작</text>
+      <text x="862" y="641">독서</text>
+      <text x="940" y="641">음악</text>
+    </g>
+  </g>
+
+  <g id="notes" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" fill="#4F493F">
+    <rect x="530" y="674" width="488" height="46" rx="10" fill="#EFE7D8" stroke="#D6C3A6" />
+    <text x="554" y="702" font-size="13">모바일 프레이밍은 같은 프리셋에서 카메라를 시선 반대 방향으로 1.0만큼 물리고, look.y +0.15, fov +4°를 적용합니다.</text>
+  </g>
+</svg>

@@ -26,13 +26,13 @@ interface CamPose {
   fov: number;
 }
 
-/** 카메라 프리셋 (design.md §6.1, world 좌표, 데스크톱 기준) */
+/** 카메라 프리셋 (design.md §6.1, world 좌표, 데스크톱 기준). 시각 참고: design/persona-room/camera-presets.svg */
 const CAM_PRESETS: Record<'overview' | PersonaId, CamPose> = {
   overview: { pos: new THREE.Vector3(0.6, 5.8, 10.4), look: new THREE.Vector3(-0.2, 1.0, 0), fov: 34 },
-  researcher: { pos: new THREE.Vector3(0.3, 3.4, 6.1), look: new THREE.Vector3(-2.0, 1.55, -2.0), fov: 30 },
-  creator: { pos: new THREE.Vector3(2.4, 3.3, 6.2), look: new THREE.Vector3(1.7, 1.6, -2.2), fov: 30 },
-  reader: { pos: new THREE.Vector3(3.0, 3.2, 7.0), look: new THREE.Vector3(1.9, 1.0, 1.2), fov: 30 },
-  musician: { pos: new THREE.Vector3(-2.8, 3.5, 7.2), look: new THREE.Vector3(-1.6, 1.2, 1.0), fov: 30 },
+  researcher: { pos: new THREE.Vector3(3.5, 6.3, -0.8), look: new THREE.Vector3(-1.9, 1.55, -2.0), fov: 30 },
+  creator: { pos: new THREE.Vector3(2.4, 6.3, 6.2), look: new THREE.Vector3(1.7, 1.6, -2.2), fov: 30 },
+  reader: { pos: new THREE.Vector3(-2.0, 6.2, 7.0), look: new THREE.Vector3(2.9, 0.9, 1.0), fov: 30 },
+  musician: { pos: new THREE.Vector3(0.8, 6.3, 8.0), look: new THREE.Vector3(-1.6, 1.2, 1.0), fov: 30 },
 };
 
 /** 도착 시 캐릭터가 바라보는 방향 (design.md §5.2) */
